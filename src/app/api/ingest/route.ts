@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkAPIKeyValidity } from "../../../../util/api/apiKey";
+import { checkAPIKeyValidity } from "../../../util/api/apiKey";
 import { parse } from "node-html-parser";
 
 export async function POST(request: Request) {

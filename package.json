@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@unkey/api": "^0.20.7",
+    "@vercel/postgres": "^0.8.0",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.31.2",
     "next": "14.2.4",
     "node-html-parser": "^6.1.13",
     "react": "^18",
@@ -19,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "drizzle-kit": "^0.22.7",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "typescript": "^5"

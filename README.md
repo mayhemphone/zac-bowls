@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Drizzle ORM
+
+tyring out something new with https://orm.drizzle.team/
+
+## Postgres
+
+My thought is to store frames relationally with games, for querying averages per frame, etc. insetead of pulling all records of all games, we can pull all 10th frames so i can see my average there. why? why do we do anything?
+
+self loathing
+
+## bananas
+
+are yummy
