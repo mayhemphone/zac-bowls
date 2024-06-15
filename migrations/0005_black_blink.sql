@@ -1,0 +1,1 @@
+ALTER TABLE "frames_table" ADD COLUMN "game_id" integer;

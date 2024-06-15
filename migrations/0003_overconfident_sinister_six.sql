@@ -1,0 +1,1 @@
+ALTER TABLE "throws_table" ADD COLUMN "game_id" integer;

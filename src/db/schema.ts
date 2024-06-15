@@ -17,7 +17,6 @@ export const games = pgTable("games_table", {
   location: varchar("location").default("west seattle bowl").notNull(), // do i migrate this to locations? idk
   comments: text("comments"),
   number: integer("number"),
-  //frames [] >
 });
 
 export const gamesRelations = relations(games, ({ many }) => ({
@@ -26,23 +25,37 @@ export const gamesRelations = relations(games, ({ many }) => ({
 
 export const frames = pgTable("frames_table", {
   id: serial("id").primaryKey(),
-  frameNumber: integer("frameNumber").notNull(),
-  // throws [] >
+  frameNumber: integer("frame_number").notNull(),
+  // relationships >
+  gameId: integer("game_id"),
 });
 
-export const framesRelations = relations(frames, ({ many }) => ({
+export const framesRelations = relations(frames, ({ many, one }) => ({
   throws: many(throws),
+  game: one(games, {
+    fields: [frames.id],
+    references: [games.id],
+  }),
 }));
 
 export const throws = pgTable("throws_table", {
   id: serial("id").primaryKey(),
   pins: varchar("pins"),
-  throwNumber: integer("throwNumber"), // ???
-  // ball >
+  throwNumber: integer("throw_number"), // ???
+  // relationships >
+  ballId: integer("ball_id"),
+  frameId: integer("frame_id"),
 });
 
 export const throwsRelations = relations(throws, ({ one }) => ({
-  ball: one(balls),
+  ball: one(balls, {
+    fields: [throws.ballId],
+    references: [balls.id],
+  }),
+  frame: one(frames, {
+    fields: [throws.frameId],
+    references: [frames.id],
+  }),
 }));
 
 export const balls = pgTable("balls_table", {
@@ -53,17 +66,26 @@ export const balls = pgTable("balls_table", {
   rg: decimal("rg").notNull(),
   diff: decimal("diff").notNull(),
   purchaseDate: date("purchaseDate").notNull(),
-  // manufacturer >
+  // relationships >
+  manufacturerId: integer("manufacturer_id"),
 });
 
-export const ballsRelations = relations(balls, ({ one }) => ({
-  manufacturers: one(manufacturers),
+export const ballsRelations = relations(balls, ({ one, many }) => ({
+  manufacturer: one(manufacturers, {
+    fields: [balls.manufacturerId],
+    references: [manufacturers.id],
+  }),
+  throws: many(throws),
 }));
 
 export const manufacturers = pgTable("manufacturers_table", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
 });
+
+export const manufacturerRelations = relations(manufacturers, ({ many }) => ({
+  balls: many(balls),
+}));
 
 // games, frames, throws, balls, manufacturers
 

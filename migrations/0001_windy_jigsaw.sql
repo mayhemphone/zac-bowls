@@ -1,0 +1,1 @@
+ALTER TABLE "balls_table" ADD COLUMN "manufacturer_id" integer;

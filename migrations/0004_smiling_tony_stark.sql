@@ -1,0 +1,1 @@
+ALTER TABLE "throws_table" RENAME COLUMN "game_id" TO "frame_id";
