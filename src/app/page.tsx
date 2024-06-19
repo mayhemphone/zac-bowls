@@ -1,3 +1,4 @@
+import Average from "@/components/Average";
 import { getAverageScores } from "@/db/queries";
 
 export default async function Home() {
@@ -14,7 +15,7 @@ export default async function Home() {
     >
       <div>
         <p>zac likes to bowl</p>
-        <h1>{avgScores}</h1>
+        <Average />
       </div>
     </main>
   );
