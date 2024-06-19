@@ -83,11 +83,11 @@ export async function POST(request: Request) {
   // console.log(scoresUrl);
 
   // get the game data
-  scrapeBowlingData(scoresUrl).then((data) => {
-    console.log({ data });
-    // now put these into the db!
-    insertCompleteGames(data);
-  });
+  const bowlingData = await scrapeBowlingData(scoresUrl);
+  console.log({ bowlingData });
+  const gameIds = await insertCompleteGames(bowlingData);
 
-  return NextResponse.json({ nice: "work" });
+  console.log({ gameIds });
+
+  return NextResponse.json({ gameIds });
 }

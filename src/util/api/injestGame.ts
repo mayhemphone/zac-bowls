@@ -8,7 +8,7 @@ import {
 import { type GamesData } from "@/app/api/ingest/route";
 
 export const insertCompleteGames = async (gamesData: GamesData) => {
-  gamesData?.scores.forEach(async (game) => {
+  const gameIds = await gamesData?.scores.map(async (game) => {
     // i dont want to talk about it
     if (game == null) return;
     console.log("inserting", { game });
@@ -22,7 +22,7 @@ export const insertCompleteGames = async (gamesData: GamesData) => {
       comments: "test data!",
     });
 
-    Object.entries(game.frames).forEach(async ([frame, value]) => {
+    await Object.entries(game.frames).forEach(async ([frame, value]) => {
       // // add frame
       console.log({ frame, value });
 
@@ -31,7 +31,7 @@ export const insertCompleteGames = async (gamesData: GamesData) => {
         gameId: newGame[0].id,
       });
 
-      Object.values(value).forEach(async (val, i) => {
+      await Object.values(value).forEach(async (val, i) => {
         await createThrow({
           pins: val,
           throwNumber: i,
@@ -39,7 +39,12 @@ export const insertCompleteGames = async (gamesData: GamesData) => {
         });
       });
     });
+
+    console.log("✅ newGame[0].id", newGame[0].id);
+    return newGame[0].id;
   });
+
+  return gameIds;
 
   // // create game
   // const newGame = await createGame({

@@ -53,3 +53,13 @@ export async function getGames() {
   const games = await db.query.games.findMany({});
   return games;
 }
+
+export async function createCompleteGameTransaction(data: InsertGame) {
+  // const newGame: number = await db.transaction(async (tx) => {
+  //   await db.insert(games).values(data).returning({ id: games.id })
+  //   await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, 'Dan'));
+  //   await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(users.name, 'Andrew'));
+  //   const [account] = await tx.select({ balance: accounts.balance }).from(accounts).where(eq(users.name, 'Dan'));
+  //   return account.balance;
+  // });
+}
