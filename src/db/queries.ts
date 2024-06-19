@@ -48,3 +48,8 @@ export async function getAverageScores() {
     return Math.round(allScores / games.length);
   } else return undefined;
 }
+
+export async function getGames() {
+  const games = await db.query.games.findMany({});
+  return games;
+}

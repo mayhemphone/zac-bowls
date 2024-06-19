@@ -70,7 +70,7 @@ async function scrapeBowlingData(url: string) {
     .filter((element) => element != null);
 
   // if there are no scores, this is a waste of time
-  if (scores.length > 0) return { date, location, oil: "hosue", scores };
+  if (scores.length > 0) return { date, location, oil: "house", scores };
 }
 
 export async function POST(request: Request) {
