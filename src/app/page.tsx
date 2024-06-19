@@ -1,9 +1,6 @@
 import Average from "@/components/Average";
-import { getAverageScores } from "@/db/queries";
 
 export default async function Home() {
-  const avgScores = getAverageScores();
-
   return (
     <main
       style={{
