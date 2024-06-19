@@ -1,4 +1,8 @@
-export default function Home() {
+import { getAverageScores } from "@/db/queries";
+
+export default async function Home() {
+  const avgScores = getAverageScores();
+
   return (
     <main
       style={{
@@ -10,6 +14,7 @@ export default function Home() {
     >
       <div>
         <p>zac likes to bowl</p>
+        <h1>{avgScores}</h1>
       </div>
     </main>
   );

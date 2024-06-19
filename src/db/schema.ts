@@ -89,17 +89,17 @@ export const manufacturerRelations = relations(manufacturers, ({ many }) => ({
 
 // games, frames, throws, balls, manufacturers
 
-export type InsertGames = typeof games.$inferInsert;
+export type InsertGame = typeof games.$inferInsert;
 export type SelectGames = typeof games.$inferSelect;
 
-export type InsertFrames = typeof frames.$inferInsert;
+export type InsertFrame = typeof frames.$inferInsert;
 export type SelectFrames = typeof frames.$inferSelect;
 
-export type InsertThrows = typeof throws.$inferInsert;
+export type InsertThrow = typeof throws.$inferInsert;
 export type SelectThrows = typeof throws.$inferSelect;
 
-export type InsertBalls = typeof balls.$inferInsert;
+export type InsertBall = typeof balls.$inferInsert;
 export type SelectBalls = typeof balls.$inferSelect;
 
-export type InsertManufacturers = typeof manufacturers.$inferInsert;
+export type InsertManufacturer = typeof manufacturers.$inferInsert;
 export type SelectManufacturers = typeof manufacturers.$inferSelect;

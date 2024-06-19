@@ -1,6 +1,77 @@
 import { NextResponse } from "next/server";
 import { checkAPIKeyValidity } from "../../../util/api/apiKey";
-import { parse } from "node-html-parser";
+import { HTMLElement, parse } from "node-html-parser";
+import { insertCompleteGames } from "@/util/api/injestGame";
+
+export type GamesDataPromise = ReturnType<typeof scrapeBowlingData>;
+export type GamesData = Awaited<GamesDataPromise>;
+
+type KeyedObject = {
+  [key: string]: (string | undefined)[];
+};
+
+// add to this
+const NAMES = ["zac", "zac wellsandt", "z"];
+
+const compileGameData = (game: HTMLElement) => {
+  const framesData: KeyedObject = {};
+
+  const frames = game.parentNode?.querySelectorAll(
+    ".cls_frame"
+  ) as HTMLElement[]; // Adjust the selector
+
+  // frames 1-9
+  frames.forEach((frame, index) => {
+    const frameNumber = index + 1;
+    const ball1 = frame.querySelector(".cls_ball1")?.text; // Adjust the selector
+    const ball2 = frame.querySelector(".cls_ball2")?.text; // Adjust the selector
+
+    const balls = [];
+
+    if (ball1 && ball1 !== "" && ball1 !== " ") balls.push(ball1);
+    if (ball2 && ball2 !== "" && ball2 !== " ") balls.push(ball2);
+
+    if (balls.length > 0) framesData[`${frameNumber}`] = balls;
+  });
+
+  // frame 10
+  const tenthFrame = game.parentNode.querySelector(".cls_frame10");
+  const tenthBall1 = tenthFrame?.querySelector(".cls_ball1")?.text;
+  const tenthBall2 = tenthFrame?.querySelector(".cls_ball2")?.text;
+  const tenthBall3 = tenthFrame?.querySelector(".cls_ball3")?.text;
+
+  framesData["10"] = [tenthBall1, tenthBall2, tenthBall3];
+
+  // score
+  const score = game.parentNode.querySelector(".cls_scoretotal")?.text!;
+
+  if (Object.keys(framesData).length === 10)
+    return { score, frames: framesData };
+
+  return null;
+};
+
+async function scrapeBowlingData(url: string) {
+  const response = await fetch(url);
+  const html = await response.text();
+  const root = parse(html);
+
+  // get common items like date and location
+  const date = root.querySelectorAll(".scoredate")[1]?.text;
+  const location = root.querySelector(".scorecenter")?.text.toLocaleLowerCase();
+
+  const games = root
+    .querySelectorAll(".cls_player")
+    .filter((td) => NAMES.includes(td.text.toLowerCase()));
+
+  // compile the game data and filter out any undefined results (incomplete games)
+  const scores = games
+    .map(compileGameData)
+    .filter((element) => element != null);
+
+  // if there are no scores, this is a waste of time
+  if (scores.length > 0) return { date, location, oil: "hosue", scores };
+}
 
 export async function POST(request: Request) {
   // if the API key isn't valid, error
@@ -9,31 +80,14 @@ export async function POST(request: Request) {
 
   // get the payload
   const { scoresUrl } = await request.json();
-  console.log(scoresUrl);
+  // console.log(scoresUrl);
 
-  // TODO: time to scrape the data from the url
-  // https://u8829925.ct.sendgrid.net/ls/click?upn=u001.dLU7tHB1zp3Y-2BTxfAGt7CK3G02CuBWFTeiEZ6ztkfyWBTQpryCZUhzE50XHZwWxFhkAAl2uL3GGbW7Q7CBFAzaOEyl-2BtYPChp30bb-2FT70Fn6t8w18T-2BczFB5-2FnQyHdNS7cckc7TZXgdLKHoyGU-2BzG3P36zd59ImIkKBSXgVB6i6RH86gMg65-2Fnk00f9RQt-2B2jZXfVyhPixwAzCcm3SEpnDhLXqtLGANMKZ9nAhdnZiE-3D3uPK_FLY6kdOOAu0SljMlVVMk04kcXQG-2Blzpw91aT-2Bo8DZ-2BVeF4fcADp1SWeoo64rub6pHIr5wBjjhd3H9WzJe5H2bYXmd-2FWJpztCFmJQOmmegOCa00n30UcuWsURrQ18O07YPBTZISoOp3O-2B6-2Ft33Xrpmi3HbwqBIOv8EukhSc5xZCGEoDh-2Ff71mCxXr-2FO9Vq-2FBFLfmkzdSOplCzIrmZ6jECkQ-3D-3D
-
-  const res = await fetch(scoresUrl);
-
-  const scoresText = await res.text();
-
-  const root = parse(scoresText);
-  // console.log(root);
-
-  // TODO: create a list of my diff names to pick from: Zac, Zac Wellsandt, etc and filter by that
-  const playerTds = root
-    .querySelectorAll(".cls_player")
-    .filter((td) => td.text.toLowerCase() === "zac");
-
-  console.log(playerTds.length);
-
-  // get the parent element (TR) of the found td's with my name
-  const playerRows = playerTds.map((td) => td.parentNode);
-  console.log(playerRows);
-
-  // TODO: should be able to search for certain classes
-  // within the frames to quickly get the ball1, ball2 and ball3
+  // get the game data
+  scrapeBowlingData(scoresUrl).then((data) => {
+    console.log({ data });
+    // now put these into the db!
+    insertCompleteGames(data);
+  });
 
   return NextResponse.json({ nice: "work" });
 }
