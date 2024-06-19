@@ -11,7 +11,7 @@ type KeyedObject = {
 };
 
 // add to this
-const NAMES = ["zac", "zac wellsandt", "z"];
+const NAMES = ["zac", "zac wellsandt", "z", "mayhem"];
 
 const compileGameData = (game: HTMLElement) => {
   const framesData: KeyedObject = {};
