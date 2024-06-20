@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkAPIKeyValidity } from "../../../util/api/apiKey";
 import { HTMLElement, parse } from "node-html-parser";
-import { insertCompleteGames } from "@/util/api/injestGame";
+import { insertGameData } from "@/db/queries";
 
 export type GamesDataPromise = ReturnType<typeof scrapeBowlingData>;
 export type GamesData = Awaited<GamesDataPromise>;
@@ -69,6 +69,8 @@ async function scrapeBowlingData(url: string) {
     .map(compileGameData)
     .filter((element) => element != null);
 
+  console.log("✅", { date, location, oil: "house", scores });
+
   // if there are no scores, this is a waste of time
   if (scores.length > 0) return { date, location, oil: "house", scores };
 }
@@ -85,7 +87,7 @@ export async function POST(request: Request) {
   // get the game data
   const bowlingData = await scrapeBowlingData(scoresUrl);
   console.log({ bowlingData });
-  const gameIds = await insertCompleteGames(bowlingData);
+  const gameIds = await insertGameData(bowlingData);
 
   console.log({ gameIds });
 
