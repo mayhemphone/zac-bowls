@@ -41,13 +41,29 @@ export async function createManufacturer(data: InsertManufacturer) {
     .returning({ id: manufacturers.id });
 }
 
-export async function getAverageScores() {
-  const games = await db.query.games.findMany({});
+export async function getAverageScores({
+  start,
+  end,
+}: {
+  start?: string;
+  end?: string;
+}) {
+  const hasDates = start && end;
+
+  const games = await db.query.games.findMany({
+    ...(hasDates && {
+      where: (games, { between }) => between(games.date, start, end),
+    }),
+  });
 
   if (games.length > 0) {
     const allScores = games.reduce((acc, val) => acc + val.score, 0);
-    return Math.round(allScores / games.length);
-  } else return undefined;
+    return {
+      average: Math.round(allScores / games.length),
+      count: games.length,
+      games,
+    };
+  } else return { average: undefined, count: 0 };
 }
 
 export async function getGames() {
