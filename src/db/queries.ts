@@ -3,14 +3,14 @@
 import { GamesData } from "@/app/api/ingest/route";
 import { db } from "./";
 import {
-  InsertGame,
-  games,
-  InsertFrame,
   InsertBall,
+  InsertFrame,
+  InsertGame,
   InsertManufacturer,
   InsertThrow,
-  frames,
   balls,
+  frames,
+  games,
   manufacturers,
   throws,
 } from "./schema";

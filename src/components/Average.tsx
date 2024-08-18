@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
 //import styles from './Average.module.scss'
-import { getAverageScores, getGames } from "@/db/queries";
+import { getAverageScores } from "@/db/queries";
 import { subtractMonths } from "@/util/dates";
-import Link from "next/link";
-import AverageButton from "./AverageButton";
 import {
   Card,
   CardContent,
@@ -12,17 +9,18 @@ import {
   CardTitle,
 } from "./ui/card";
 type Props = {
-  avgScores: Awaited<ReturnType<typeof getAverageScores>>;
   months?: number;
 };
 
-const Average = ({ avgScores, months }: Props) => {
+const Average = async ({ months }: Props) => {
+  const avgScores = await getAverageScores({
+    start: subtractMonths(months || 360),
+    end: subtractMonths(0), // today
+  });
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {months ? `${months} month ` : "All time "}average
-        </CardTitle>
+        <CardTitle>{months ? `${months} month ` : "All time "}</CardTitle>
       </CardHeader>
       <CardContent>
         <h1 className="text-4xl font-bold">{avgScores?.average}</h1>
