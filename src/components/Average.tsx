@@ -18,7 +18,7 @@ const Average = async ({ months }: Props) => {
     end: subtractMonths(0), // today
   });
   return (
-    <Card>
+    <Card className="min-w-[320px]">
       <CardHeader>
         <CardTitle>{months ? `${months} month ` : "All time "}</CardTitle>
       </CardHeader>

@@ -17,9 +17,9 @@ export default function ScatterPlot({ avgScores }: ScatterPlotProps) {
   return (
     <Card className="h-full w-full ">
       <CardHeader>
-        <CardTitle>Scatter Plot</CardTitle>
+        <CardTitle>All time scores</CardTitle>
         <CardDescription>
-          A scatter plot showing game scores for the last year.
+          The tighter the veritical, the more consistent the gameplay.
         </CardDescription>
       </CardHeader>
       <CardContent>

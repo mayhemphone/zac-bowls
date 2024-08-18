@@ -10,12 +10,15 @@ export default async function Home() {
   });
 
   return (
-    <main className="mt-4 flex flex-col gap-4">
+    <main className="mt-4 flex flex-col gap-4 ">
       <h2 className="text-4xl font-bold">Averages</h2>
-      <div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ">
-        <Average />
-        <Average months={3} />
-        <Average months={1} />
+      <div className="relative">
+        <div className="flex  space-x-4 overflow-x-scroll pb-4">
+          <Average />
+          <Average months={3} />
+          <Average months={1} />
+        </div>
+        <div className="pointer-events-none absolute -right-4 w-4/12 top-0 bottom-0 bg-gradient-to-l from-transparent lg:from-transparent"></div>
       </div>
 
       <h2 className="text-4xl font-bold">Scores</h2>
