@@ -36,7 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col items-center max-w-5xl w-full px-4 min-h-dvh">
+          <div className="flex flex-col items-center max-w-5xl w-full px-4 pb-4 min-h-dvh">
             <nav className="flex justify-between justify w-full items-center">
               <p className="">zac bowls</p>
               <ThemeToggle />

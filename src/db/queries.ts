@@ -1,6 +1,7 @@
 "use server";
 
 import { GamesData } from "@/app/api/ingest/route";
+import { count, sql } from "drizzle-orm";
 import { db } from "./";
 import {
   InsertBall,
@@ -69,6 +70,47 @@ export async function getAverageScores({
 export async function getGames() {
   const games = await db.query.games.findMany({});
   return games;
+}
+
+export async function getLatestGame() {
+  const newestGame = await db.query.games.findFirst({
+    orderBy: (games, { desc }) => [desc(games.id)],
+    with: {
+      frames: { with: { throws: true } },
+    },
+  });
+
+  return newestGame;
+}
+
+export async function getLatestCompleteGame() {
+  const newestGame = await db.query.games.findFirst({
+    where: (games, { eq }) =>
+      eq(
+        db
+          .select({ count: count() })
+          .from(frames)
+          .where(sql`${frames.gameId} = ${games.id}`),
+        10
+      ),
+    orderBy: (games, { desc }) => [desc(games.id)],
+    with: {
+      frames: { with: { throws: true } },
+    },
+  });
+  console.log(newestGame?.id);
+  return newestGame;
+}
+
+export async function getGameById(id: number) {
+  const game = await db.query.games.findFirst({
+    where: (games, { eq }) => eq(games.id, id),
+    with: {
+      frames: { with: { throws: true } },
+    },
+  });
+
+  return game;
 }
 
 export async function insertGameData(

@@ -1,11 +1,11 @@
 import { relations } from "drizzle-orm";
 import {
   date,
+  decimal,
   integer,
   pgTable,
   serial,
   text,
-  decimal,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -33,7 +33,7 @@ export const frames = pgTable("frames_table", {
 export const framesRelations = relations(frames, ({ many, one }) => ({
   throws: many(throws),
   game: one(games, {
-    fields: [frames.id],
+    fields: [frames.gameId],
     references: [games.id],
   }),
 }));

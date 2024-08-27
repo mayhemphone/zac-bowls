@@ -1,6 +1,7 @@
 import Average from "@/components/Average";
 import ScatterPlot from "@/components/charts/ScatterPlot";
-import { getAverageScores } from "@/db/queries";
+import ScoreBoard from "@/components/scoreBoard/ScoreBoard";
+import { getAverageScores, getLatestCompleteGame } from "@/db/queries";
 import { subtractMonths } from "@/util/dates";
 
 export default async function Home() {
@@ -9,11 +10,14 @@ export default async function Home() {
     end: subtractMonths(0), // today
   });
 
+  const game = await getLatestCompleteGame();
+
   return (
     <main className="mt-4 flex flex-col gap-4 ">
+      {/* <pre>{JSON.stringify(game, null, 2)}</pre> */}
       <h2 className="text-4xl font-bold">Averages</h2>
       <div className="relative">
-        <div className="flex  space-x-4 overflow-x-scroll pb-4">
+        <div className="flex space-x-4 overflow-x-scroll pb-4">
           <Average months={1} />
           <Average months={3} />
           <Average />
@@ -28,6 +32,7 @@ export default async function Home() {
       {/* <hr style={{ width: "100%", margin: "10px 0" }} />
         <h3>last set</h3> */}
       {/* pull games from last date entered */}
+      <ScoreBoard game={game} />
     </main>
   );
 }
