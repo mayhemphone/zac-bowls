@@ -13,20 +13,23 @@ export default async function Home() {
   const game = await getLatestCompleteGame();
 
   return (
-    <main className="mt-4 flex flex-col gap-4 ">
+    <main className="flex flex-col gap-8 ">
       {/* <pre>{JSON.stringify(game, null, 2)}</pre> */}
-      <h2 className="text-4xl font-bold">Averages</h2>
-      <div className="relative">
-        <div className="flex space-x-4 overflow-x-scroll pb-4">
-          <Average months={1} />
-          <Average months={3} />
-          <Average />
+      <div>
+        <h2 className="text-4xl font-bold pb-2">Averages</h2>
+        <div className="relative">
+          <div className="flex space-x-4 overflow-x-scroll">
+            <Average months={1} />
+            <Average months={3} />
+            <Average />
+          </div>
+          <div className="pointer-events-none absolute -right-4 w-4/12 top-0 bottom-0 bg-gradient-to-l from-transparent lg:from-transparent"></div>
         </div>
-        <div className="pointer-events-none absolute -right-4 w-4/12 top-0 bottom-0 bg-gradient-to-l from-transparent lg:from-transparent"></div>
       </div>
-
-      <h2 className="text-4xl font-bold">Scores</h2>
-      <ScatterPlot avgScores={avgScores} />
+      <div>
+        <h2 className="text-4xl font-bold pb-2">Scores</h2>
+        <ScatterPlot avgScores={avgScores} />
+      </div>
 
       {/* abstract to component  */}
       {/* <hr style={{ width: "100%", margin: "10px 0" }} />

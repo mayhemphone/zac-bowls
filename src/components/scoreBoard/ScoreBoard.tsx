@@ -21,7 +21,7 @@ const ScoreBoard = ({ game }: ScoreBoardProps) => {
     }
   }, []);
 
-  if (game?.frames.length === 0)
+  if (!game)
     return (
       <div className="border p-4">
         No frames, we should find a better game - or dont let this happen, dude
@@ -29,17 +29,27 @@ const ScoreBoard = ({ game }: ScoreBoardProps) => {
     );
 
   return (
-    <div
-      className={cn(
-        "flex overflow-x-auto pb-4",
-        // we are hding it until the container is scrolled to the end
-        show ? "visible" : "invisible"
-      )}
-      ref={scrollContainerRef}
-    >
-      {game?.frames?.map((frame) => (
-        <Frame key={frame.id} frame={frame} />
-      ))}
+    <div>
+      <h2 className="text-4xl font-bold pb-2">
+        {new Date(game?.date).toLocaleDateString("en-us", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </h2>
+
+      <div
+        className={cn(
+          "flex overflow-x-auto pb-4",
+          // we are hding it until the container is scrolled to the end
+          show ? "visible" : "invisible"
+        )}
+        ref={scrollContainerRef}
+      >
+        {game?.frames?.map((frame) => (
+          <Frame key={frame.id} frame={frame} />
+        ))}
+      </div>
     </div>
   );
 };
