@@ -64,12 +64,12 @@ export default function Index() {
   const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
   const handleCreateItem = () => {};
-  const handleEditItem = (item) => {};
-  const handleDeleteItem = (item) => {};
+  const handleEditItem = (item: any) => {};
+  const handleDeleteItem = (item: any) => {};
 
   return (
     <div className="w-full  mx-auto px-4 md:px-6 py-8">
@@ -126,16 +126,16 @@ export default function Index() {
           items
         </div>
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+        // currentPage={1}
+        // totalPages={totalPages}
+        // onPageChange={handlePageChange}
         />
       </div>
     </div>
   );
 }
 
-function FilePenIcon(props) {
+function FilePenIcon(props: any) {
   return (
     <svg
       {...props}
@@ -156,7 +156,7 @@ function FilePenIcon(props) {
   );
 }
 
-function TrashIcon(props) {
+function TrashIcon(props: any) {
   return (
     <svg
       {...props}
