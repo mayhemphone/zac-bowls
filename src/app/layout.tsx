@@ -1,8 +1,10 @@
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
+import SignedIn from "@/components/SignedIn";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const fontSans = FontSans({
@@ -38,8 +40,13 @@ export default function RootLayout({
         >
           <div className="flex flex-col items-center max-w-5xl w-full px-4 pb-4 min-h-dvh">
             <nav className="flex justify-between justify w-full items-center">
-              <p className="">zac bowls</p>
-              <ThemeToggle />
+              <Link href={"/"} className="">
+                zac bowls
+              </Link>
+              <div className="flex gap-6 items-center justify-center">
+                <SignedIn />
+                <ThemeToggle />
+              </div>
             </nav>
             <div className="flex-1 w-full">{children}</div>
           </div>
