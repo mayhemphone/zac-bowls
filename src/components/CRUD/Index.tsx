@@ -4,9 +4,16 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 "use client";
-
 import { Button } from "@/components/ui/button";
-import { Pagination } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -15,127 +22,155 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-export default function Index() {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "Product A",
-      description: "This is the description for Product A",
-      price: 9.99,
-      stock: 50,
-    },
-    {
-      id: 2,
-      name: "Product B",
-      description: "This is the description for Product B",
-      price: 19.99,
-      stock: 25,
-    },
-    {
-      id: 3,
-      name: "Product C",
-      description: "This is the description for Product C",
-      price: 14.99,
-      stock: 75,
-    },
-    {
-      id: 4,
-      name: "Product D",
-      description: "This is the description for Product D",
-      price: 24.99,
-      stock: 10,
-    },
-    {
-      id: 5,
-      name: "Product E",
-      description: "This is the description for Product E",
-      price: 7.99,
-      stock: 100,
-    },
-  ]);
+export type IndexProps = {
+  currentPage: number;
+  pageSize: number;
+  totalRows: number;
+  items: { [key: string]: string }[]; // this needs to be dynamic? or does it?
+  handleCreateItem?: () => void;
+  handleEditItem: (id: number | string) => void;
+  handleDeleteItem: (id: number | string) => void;
+  schema: {
+    header: string;
+    prop: string;
+    length?: boolean;
+  }[];
+};
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+export default function Index({
+  schema,
+  items,
+  pageSize,
+  currentPage,
+  totalRows,
+  handleCreateItem,
+  handleEditItem,
+  handleDeleteItem,
+}: IndexProps) {
+  const indexOfLastItem = currentPage * pageSize;
+  const indexOfFirstItem = indexOfLastItem - pageSize;
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
-  const handleCreateItem = () => {};
-  const handleEditItem = (item: any) => {};
-  const handleDeleteItem = (item: any) => {};
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = totalRows > currentPage * pageSize;
+  const hasTwoNextPage = totalRows > (currentPage + 1) * pageSize;
 
   return (
-    <div className="w-full  mx-auto px-4 md:px-6 py-8">
+    <div className="w-full mx-auto py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">CRUD Interface</h1>
-        <Button onClick={handleCreateItem} size="sm">
-          Create New
-        </Button>
+        {handleCreateItem && (
+          <Button onClick={() => handleCreateItem()} size="sm">
+            Create New
+          </Button>
+        )}
       </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Actions</TableHead>
+              {schema.map((col) => (
+                <TableHead key={col.header}>{col.header}</TableHead>
+              ))}
+              <TableHead>actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentItems.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.name}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>${item.price.toFixed(2)}</TableCell>
-                <TableCell>{item.stock}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => handleEditItem(item)}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <FilePenIcon className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      onClick={() => handleDeleteItem(item)}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {items.map((item) => {
+              console.log(item);
+              return (
+                <TableRow key={item.id}>
+                  {schema.map((col) => (
+                    <TableCell key={col.prop}>
+                      {col.length ? item[col.prop].length : item[col.prop]}
+                    </TableCell>
+                  ))}
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => handleEditItem(item.id)}
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <FilePenIcon className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteItem(item.id)}
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
       <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-muted-foreground">
-          Showing {indexOfFirstItem + 1} to {indexOfLastItem} of {items.length}{" "}
-          items
+        <div className="text-sm text-muted-foreground w-full">
+          Showing {indexOfFirstItem + 1} - {indexOfLastItem} of {totalRows}
         </div>
-        <Pagination
-        // currentPage={1}
-        // totalPages={totalPages}
-        // onPageChange={handlePageChange}
-        />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={`${currentPage - 1}`}
+                className={cn(
+                  !hasPreviousPage && "pointer-events-none	opacity-30"
+                )}
+              />
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink
+                href={`${currentPage - 1}`}
+                className={cn(
+                  !hasPreviousPage && "pointer-events-none	opacity-0"
+                )}
+              >
+                {currentPage - 1}
+              </PaginationLink>
+              <PaginationLink href="#" isActive>
+                {currentPage}
+              </PaginationLink>
+
+              <PaginationLink
+                href={`${currentPage + 1}`}
+                className={cn(!hasNextPage && "pointer-events-none	opacity-0")}
+              >
+                {currentPage + 1}
+              </PaginationLink>
+            </PaginationItem>
+
+            <>
+              <PaginationItem>
+                <PaginationEllipsis
+                  className={cn(
+                    !hasTwoNextPage && "pointer-events-none	opacity-0"
+                  )}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href={`${currentPage + 1}`}
+                  className={cn(
+                    !hasNextPage && "pointer-events-none opacity-30"
+                  )}
+                />
+              </PaginationItem>
+            </>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
 }
 
-function FilePenIcon(props: any) {
+function FilePenIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -156,7 +191,7 @@ function FilePenIcon(props: any) {
   );
 }
 
-function TrashIcon(props: any) {
+function TrashIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

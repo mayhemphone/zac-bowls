@@ -113,6 +113,22 @@ export async function getGameById(id: number) {
   return game;
 }
 
+export async function getPaginatedGames(page: number, pageSize: number) {
+  return await db.query.games.findMany({
+    orderBy: (games, { asc }) => asc(games.id),
+    with: {
+      frames: true,
+    },
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+  });
+}
+
+export async function getGamesCount() {
+  const res = await db.select({ count: count() }).from(games);
+  return res[0].count;
+}
+
 export async function insertGameData(
   gameData: GamesData
 ): Promise<number[] | undefined> {
