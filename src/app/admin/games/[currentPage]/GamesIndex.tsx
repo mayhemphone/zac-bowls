@@ -3,7 +3,7 @@ import Index, { IndexProps } from "@/components/CRUD/Index";
 
 type Props = Omit<
   IndexProps,
-  "handleCreateItem" | "handleEditItem" | "handleDeleteItem"
+  "handleCreateItem" | "handleEditItem" | "handleDeleteItem" | "schema"
 >;
 
 const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {

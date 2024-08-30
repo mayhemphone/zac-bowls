@@ -15,13 +15,13 @@ const Page = async ({ params }: GamePageProps) => {
 
   const games = await getPaginatedGames(parseInt(currentPage, 10), 10);
   const totalRows = await getGamesCount();
-
+  const currentPageInt = parseInt(currentPage, 10);
   return (
     <GamesIndex
-      currentPage={parseInt(currentPage, 10)}
-      items={games}
+      currentPage={currentPageInt}
       pageSize={10}
       totalRows={totalRows}
+      items={games}
     />
   );
 };
