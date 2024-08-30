@@ -52,9 +52,12 @@ export default function Index({
   const indexOfLastItem = currentPage * pageSize;
   const indexOfFirstItem = indexOfLastItem - pageSize;
 
+  const lastPage = Math.ceil(totalRows / pageSize);
+
   const hasPreviousPage = currentPage > 1;
   const hasNextPage = totalRows > currentPage * pageSize;
   const hasTwoNextPage = totalRows > (currentPage + 1) * pageSize;
+  const hasThreeNextPage = totalRows > (currentPage + 2) * pageSize;
 
   return (
     <div className="w-full mx-auto py-8">
@@ -146,23 +149,31 @@ export default function Index({
               </PaginationLink>
             </PaginationItem>
 
-            <>
-              <PaginationItem>
-                <PaginationEllipsis
-                  className={cn(
-                    !hasTwoNextPage && "pointer-events-none	opacity-0"
-                  )}
-                />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  href={`${currentPage + 1}`}
-                  className={cn(
-                    !hasNextPage && "pointer-events-none opacity-30"
-                  )}
-                />
-              </PaginationItem>
-            </>
+            <PaginationItem>
+              <PaginationEllipsis
+                className={cn(
+                  !hasThreeNextPage && "pointer-events-none	opacity-0"
+                )}
+              />
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink
+                href={`${lastPage}`}
+                className={cn(
+                  !hasThreeNextPage && "pointer-events-none	opacity-0"
+                )}
+              >
+                {lastPage}
+              </PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationNext
+                href={`${currentPage + 1}`}
+                className={cn(!hasNextPage && "pointer-events-none opacity-30")}
+              />
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
       </div>
