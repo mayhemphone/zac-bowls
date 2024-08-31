@@ -136,7 +136,8 @@ export async function getGamesCount() {
 }
 
 export async function insertGameData(
-  gameData: GamesData
+  gameData: GamesData,
+  linkId: number
 ): Promise<number[] | undefined> {
   const gameIds: number[] = [];
   if (!gameData) return undefined;
@@ -156,6 +157,7 @@ export async function insertGameData(
             oil: gameData.oil,
             location: gameData.location,
             number: index + 1, // assuming game number should be 1 for all games; adjust if necessary
+            linkId,
           })
           .returning({ id: games.id }); //.get();
 

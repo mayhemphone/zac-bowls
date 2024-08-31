@@ -1,4 +1,4 @@
-import { createLink } from "@/db/queries";
+import { createLink, insertGameData } from "@/db/queries";
 import { NextResponse } from "next/server";
 import { HTMLElement, parse } from "node-html-parser";
 import { checkAPIKeyValidity } from "../../../util/api/apiKey";
@@ -75,7 +75,7 @@ async function scrapeBowlingData(url: string) {
   if (scores.length > 0) return { date, location, oil: "house", scores };
 }
 
-// original POST that created games.
+// original POST tcan long-t created games.
 // export async function POST(request: Request) {
 //   // if the API key isn't valid, error
 //   const isValid = await checkAPIKeyValidity(request);
@@ -97,6 +97,11 @@ async function scrapeBowlingData(url: string) {
 
 // new POST that creates record in LINKS table
 
+async function scrapeAndInsterGame(linkId: number, url: string) {
+  const bowlingData = await scrapeBowlingData(url);
+  insertGameData(bowlingData, linkId);
+}
+
 export async function POST(request: Request) {
   // if the API key isn't valid, error
   const isValid = await checkAPIKeyValidity(request);
@@ -107,7 +112,10 @@ export async function POST(request: Request) {
   // console.log({scoresUrl,emailDate});
 
   // create a link
-  const link = await createLink({ url, emailDate });
+  const createdLink = await createLink({ url, emailDate });
 
-  return NextResponse.json({ message: "cool thx", link });
+  // kick off game ingesttion without saving the gameId to the link row (we'll update later)
+  scrapeAndInsterGame(createdLink[0].id, url);
+
+  return NextResponse.json({ message: "cool thx", createdLink });
 }
