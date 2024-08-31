@@ -1,7 +1,7 @@
+import { createLink } from "@/db/queries";
 import { NextResponse } from "next/server";
-import { checkAPIKeyValidity } from "../../../util/api/apiKey";
 import { HTMLElement, parse } from "node-html-parser";
-import { insertGameData } from "@/db/queries";
+import { checkAPIKeyValidity } from "../../../util/api/apiKey";
 
 export type GamesDataPromise = ReturnType<typeof scrapeBowlingData>;
 export type GamesData = Awaited<GamesDataPromise>;
@@ -75,21 +75,39 @@ async function scrapeBowlingData(url: string) {
   if (scores.length > 0) return { date, location, oil: "house", scores };
 }
 
+// original POST that created games.
+// export async function POST(request: Request) {
+//   // if the API key isn't valid, error
+//   const isValid = await checkAPIKeyValidity(request);
+//   if (!isValid) return new Response("nah dog", { status: 500 });
+
+//   // get the payload
+//   const { scoresUrl } = await request.json();
+//   // console.log(scoresUrl);
+
+//   // get the game data
+//   const bowlingData = await scrapeBowlingData(scoresUrl);
+//   console.log({ bowlingData });
+//   const gameIds = await insertGameData(bowlingData);
+
+//   console.log({ gameIds });
+
+//   return NextResponse.json({ gameIds });
+// }
+
+// new POST that creates record in LINKS table
+
 export async function POST(request: Request) {
   // if the API key isn't valid, error
   const isValid = await checkAPIKeyValidity(request);
   if (!isValid) return new Response("nah dog", { status: 500 });
 
   // get the payload
-  const { scoresUrl } = await request.json();
-  // console.log(scoresUrl);
+  const { url, emailDate } = await request.json();
+  // console.log({scoresUrl,emailDate});
 
-  // get the game data
-  const bowlingData = await scrapeBowlingData(scoresUrl);
-  console.log({ bowlingData });
-  const gameIds = await insertGameData(bowlingData);
+  // create a link
+  const link = await createLink({ url, emailDate });
 
-  console.log({ gameIds });
-
-  return NextResponse.json({ gameIds });
+  return NextResponse.json({ message: "cool thx", link });
 }

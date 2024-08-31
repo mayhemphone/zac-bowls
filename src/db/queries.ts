@@ -7,14 +7,20 @@ import {
   InsertBall,
   InsertFrame,
   InsertGame,
+  InsertLink,
   InsertManufacturer,
   InsertThrow,
   balls,
   frames,
   games,
+  links,
   manufacturers,
   throws,
 } from "./schema";
+
+export async function createLink(data: InsertLink) {
+  return await db.insert(links).values(data).returning();
+}
 
 export async function createGame(data: InsertGame) {
   return await db.insert(games).values(data).returning({ id: games.id });
