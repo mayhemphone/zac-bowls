@@ -157,7 +157,7 @@ export async function insertGameData(
       // Insert each game in scores array
       for (const [index, game] of gameData.scores.entries()) {
         if (!game) continue;
-
+        console.log("json", JSON.stringify(game));
         // Insert game
         const insertedGame = await tx
           .insert(games)
@@ -168,6 +168,7 @@ export async function insertGameData(
             location: gameData.location,
             number: index + 1, // assuming game number should be 1 for all games; adjust if necessary
             linkId,
+            rawData: JSON.stringify(game),
           })
           .returning({ id: games.id });
 
@@ -201,13 +202,6 @@ export async function insertGameData(
           }
         }
       }
-
-      // do we even need this?
-      //   // update link with gameId
-      //   await tx
-      //     .update(links)
-      //     .set({ gameId: gameIds })
-      //     .where({id:linkId})
     });
 
     console.log("🌟GameInsert Transaction committed successfully");

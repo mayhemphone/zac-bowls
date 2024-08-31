@@ -10,8 +10,11 @@ type KeyedObject = {
   [key: string]: (string | undefined)[];
 };
 
-// add to this
-const NAMES = ["zac", "zac wellsandt", "z", "mayhem"];
+// if i want scores from all games
+// const NAMES = ["zac", "zac wellsandt", "z", "mayhem"];
+
+// ingest only league games
+const NAMES = ["zac wellsandt"];
 
 const compileGameData = (game: HTMLElement) => {
   const framesData: KeyedObject = {};
@@ -74,33 +77,12 @@ export async function scrapeBowlingData(url: string) {
   if (scores.length > 0) return { date, location, oil: "house", scores };
 }
 
-// original POST tcan long-t created games.
-// export async function POST(request: Request) {
-//   // if the API key isn't valid, error
-//   const isValid = await checkAPIKeyValidity(request);
-//   if (!isValid) return new Response("nah dog", { status: 500 });
-
-//   // get the payload
-//   const { scoresUrl } = await request.json();
-//   // console.log(scoresUrl);
-
-//   // get the game data
-//   const bowlingData = await scrapeBowlingData(scoresUrl);
-//   console.log({ bowlingData });
-//   const gameIds = await insertGameData(bowlingData);
-
-//   console.log({ gameIds });
-
-//   return NextResponse.json({ gameIds });
-// }
-
-// new POST that creates record in LINKS table
-
 async function scrapeAndInsterGame(linkId: number, url: string) {
   const bowlingData = await scrapeBowlingData(url);
   insertGameData(bowlingData, linkId);
 }
 
+// new POST that creates record in LINKS table
 export async function POST(request: Request) {
   // if the API key isn't valid, error
   const isValid = await checkAPIKeyValidity(request);

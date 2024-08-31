@@ -1,0 +1,1 @@
+ALTER TABLE "GAMES" ADD COLUMN "rawData" text;

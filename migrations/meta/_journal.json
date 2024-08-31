@@ -71,6 +71,13 @@
       "when": 1725087794496,
       "tag": "0009_sudden_sister_grimm",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1725088891198,
+      "tag": "0010_slim_blue_blade",
+      "breakpoints": true
     }
   ]
 }

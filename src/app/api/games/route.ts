@@ -22,6 +22,8 @@ export async function GET(request: Request) {
   return NextResponse.json({ games });
 }
 
+// this endpoint really isn't needed.
+// it's just for testing the ingestion process quickly
 export async function POST(request: Request) {
   // if the API key isn't valid, error
   const isValid = await checkAPIKeyValidity(request);

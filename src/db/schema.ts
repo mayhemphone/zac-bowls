@@ -29,6 +29,7 @@ export const games = pgTable("GAMES", {
   location: varchar("location").default("west seattle bowl").notNull(), // do i migrate this to locations? idk
   comments: text("comments"),
   number: integer("number"),
+  rawData: text("rawData"),
   // relationships >
   linkId: integer("linkId"),
 });
