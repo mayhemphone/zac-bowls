@@ -110,7 +110,7 @@ export async function POST(request: Request) {
   const createdLink = await createLink({ url, emailDate });
 
   // kick off game ingesttion without saving the gameId to the link row (we'll update later)
-  scrapeAndInsterGame(createdLink[0].id, url);
+  if (createdLink[0]?.id) scrapeAndInsterGame(createdLink[0].id, url);
 
   return NextResponse.json({ message: "cool thx", createdLink });
 }
