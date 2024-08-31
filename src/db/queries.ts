@@ -1,6 +1,6 @@
 "use server";
 
-import { GamesData } from "@/app/api/ingest/route";
+import { GamesData } from "@/util/api/injestGame";
 import { count, sql } from "drizzle-orm";
 import { db } from "./";
 import {
@@ -188,17 +188,19 @@ export async function insertGameData(
 
           // Insert throws for each frame
           let throwNumber = 1;
-          for (const value of frameValues.throws) {
-            if (value) {
-              await tx
-                .insert(throws)
-                .values({
-                  frameId: insertedFrame[0].id,
-                  throwNumber,
-                  pins: value,
-                })
-                .returning({ id: throws.id });
-              throwNumber++;
+          if (frameValues.throws) {
+            for (const value of frameValues.throws) {
+              if (value) {
+                await tx
+                  .insert(throws)
+                  .values({
+                    frameId: insertedFrame[0].id,
+                    throwNumber,
+                    pins: value,
+                  })
+                  .returning({ id: throws.id });
+                throwNumber++;
+              }
             }
           }
         }

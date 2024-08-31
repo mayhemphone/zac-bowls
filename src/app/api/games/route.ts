@@ -1,7 +1,7 @@
 import { getGames, insertGameData } from "@/db/queries";
 import { checkAPIKeyValidity } from "@/util/api/apiKey";
+import { scrapeBowlingData } from "@/util/api/injestGame";
 import { NextResponse } from "next/server";
-import { scrapeBowlingData } from "../ingest/route";
 
 async function scrapeAndInsterGame(linkId: number, url: string) {
   console.log("📉 scrapeAndInsterGame", { linkId, url });
