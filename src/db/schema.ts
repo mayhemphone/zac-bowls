@@ -9,7 +9,22 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const games = pgTable("games_table", {
+export const links = pgTable("LINKS", {
+  id: serial("id").primaryKey(),
+  url: varchar("url").notNull(),
+  emailDate: date("emailDate").notNull(),
+  // relationships >
+  gameId: integer("gameId"),
+});
+
+export const linksRelations = relations(links, ({ one }) => ({
+  game: one(games, {
+    fields: [links.gameId],
+    references: [games.id],
+  }),
+}));
+
+export const games = pgTable("GAMES", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
   score: integer("score").notNull(),
@@ -17,17 +32,23 @@ export const games = pgTable("games_table", {
   location: varchar("location").default("west seattle bowl").notNull(), // do i migrate this to locations? idk
   comments: text("comments"),
   number: integer("number"),
+  // relationships >
+  linkId: integer("linkId"),
 });
 
-export const gamesRelations = relations(games, ({ many }) => ({
+export const gamesRelations = relations(games, ({ many, one }) => ({
   frames: many(frames),
+  link: one(links, {
+    fields: [games.linkId],
+    references: [links.id],
+  }),
 }));
 
-export const frames = pgTable("frames_table", {
+export const frames = pgTable("FRAMES", {
   id: serial("id").primaryKey(),
-  frameNumber: integer("frame_number").notNull(),
+  frameNumber: integer("frameNumber").notNull(),
   // relationships >
-  gameId: integer("game_id"),
+  gameId: integer("gameId"),
 });
 
 export const framesRelations = relations(frames, ({ many, one }) => ({
@@ -38,13 +59,13 @@ export const framesRelations = relations(frames, ({ many, one }) => ({
   }),
 }));
 
-export const throws = pgTable("throws_table", {
+export const throws = pgTable("THROWS", {
   id: serial("id").primaryKey(),
   pins: varchar("pins"),
-  throwNumber: integer("throw_number"), // ???
+  throwNumber: integer("throwNumber"), // ???
   // relationships >
-  ballId: integer("ball_id"),
-  frameId: integer("frame_id"),
+  ballId: integer("ballId"),
+  frameId: integer("frameId"),
 });
 
 export const throwsRelations = relations(throws, ({ one }) => ({
@@ -58,7 +79,7 @@ export const throwsRelations = relations(throws, ({ one }) => ({
   }),
 }));
 
-export const balls = pgTable("balls_table", {
+export const balls = pgTable("BALLS", {
   id: serial("id").primaryKey(),
   name: varchar("name").notNull(),
   year: integer("year").notNull(),
@@ -67,7 +88,7 @@ export const balls = pgTable("balls_table", {
   diff: decimal("diff").notNull(),
   purchaseDate: date("purchaseDate").notNull(),
   // relationships >
-  manufacturerId: integer("manufacturer_id"),
+  manufacturerId: integer("manufacturerId"),
 });
 
 export const ballsRelations = relations(balls, ({ one, many }) => ({
@@ -78,7 +99,7 @@ export const ballsRelations = relations(balls, ({ one, many }) => ({
   throws: many(throws),
 }));
 
-export const manufacturers = pgTable("manufacturers_table", {
+export const manufacturers = pgTable("MANUFACTURERS", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
 });
@@ -88,6 +109,9 @@ export const manufacturerRelations = relations(manufacturers, ({ many }) => ({
 }));
 
 // games, frames, throws, balls, manufacturers
+
+export type InsertLink = typeof links.$inferInsert;
+export type SelectLinks = typeof links.$inferSelect;
 
 export type InsertGame = typeof games.$inferInsert;
 export type SelectGames = typeof games.$inferSelect;

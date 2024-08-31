@@ -45,6 +45,11 @@ My thought is to store frames relationally with games, for querying averages per
 
 self loathing
 
-## bananas
+## Schema Changes / Migrations
 
-are yummy
+After you modify the schema run these two commands in the terminal
+
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+```
