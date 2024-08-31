@@ -18,7 +18,8 @@ export async function POST(request: Request) {
 
   // kick off game ingesttion without saving the gameId to the link row (we'll update later)
   if (createdLink[0]?.id) {
-    scrapeAndInsertGame(createdLink[0].id, url);
+    // this is only working locally.
+    await scrapeAndInsertGame(createdLink[0].id, url);
   }
 
   return NextResponse.json({ message: "cool thx", createdLink });
