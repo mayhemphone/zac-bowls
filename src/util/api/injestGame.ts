@@ -91,5 +91,5 @@ export async function scrapeBowlingData(url: string) {
 
 export async function scrapeAndInsertGame(linkId: number, url: string) {
   const bowlingData = await scrapeBowlingData(url);
-  insertGameData(bowlingData, linkId);
+  await insertGameData(bowlingData, linkId);
 }
