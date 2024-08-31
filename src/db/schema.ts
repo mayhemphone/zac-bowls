@@ -47,6 +47,7 @@ export const frames = pgTable("FRAMES", {
   frameNumber: integer("frameNumber").notNull(),
   // relationships >
   gameId: integer("gameId"),
+  score: varchar("score"),
 });
 
 export const framesRelations = relations(frames, ({ many, one }) => ({

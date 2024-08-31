@@ -35,6 +35,7 @@ const ScoreBoard = ({ game }: ScoreBoardProps) => {
           month: "short",
           day: "numeric",
           year: "numeric",
+          timeZone: "utc",
         })}
       </h2>
 

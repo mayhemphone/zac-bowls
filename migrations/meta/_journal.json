@@ -78,6 +78,13 @@
       "when": 1725088891198,
       "tag": "0010_slim_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1725089799771,
+      "tag": "0011_striped_kylun",
+      "breakpoints": true
     }
   ]
 }

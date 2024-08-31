@@ -1,0 +1,1 @@
+ALTER TABLE "FRAMES" ADD COLUMN "score" varchar;

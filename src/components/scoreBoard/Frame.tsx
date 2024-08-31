@@ -19,12 +19,7 @@ const Frame = ({ frame }: FrameProps) => {
           ))}
         </div>
         <div className="flex items-center justify-center flex-1">
-          <p className="text-6xl pb-4">
-            ???
-            {
-              //score needs to be calculated.  I probably should have just injested it lol
-            }
-          </p>
+          <p className="text-6xl pb-4">{frame?.score ? frame.score : ""}</p>
         </div>
       </div>
     </div>

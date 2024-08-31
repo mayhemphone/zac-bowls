@@ -182,12 +182,13 @@ export async function insertGameData(
             .values({
               frameNumber: parseInt(frameNumber, 10),
               gameId: insertedGame[0].id,
+              score: frameValues.score,
             })
             .returning({ id: frames.id });
 
           // Insert throws for each frame
           let throwNumber = 1;
-          for (const value of frameValues) {
+          for (const value of frameValues.throws) {
             if (value) {
               await tx
                 .insert(throws)

@@ -7,7 +7,10 @@ export type GamesDataPromise = ReturnType<typeof scrapeBowlingData>;
 export type GamesData = Awaited<GamesDataPromise>;
 
 type KeyedObject = {
-  [key: string]: (string | undefined)[];
+  [key: string]: {
+    throws: (string | undefined)[];
+    score: string | undefined;
+  };
 };
 
 // if i want scores from all games
@@ -28,13 +31,21 @@ const compileGameData = (game: HTMLElement) => {
     const frameNumber = index + 1;
     const ball1 = frame.querySelector(".cls_ball1")?.text; // Adjust the selector
     const ball2 = frame.querySelector(".cls_ball2")?.text; // Adjust the selector
-
+    const score = frame.querySelector(".cls_framescore")?.text;
+    console.log("☠️", { score });
     const balls = [];
 
     if (ball1 && ball1 !== "" && ball1 !== " ") balls.push(ball1);
     if (ball2 && ball2 !== "" && ball2 !== " ") balls.push(ball2);
 
-    if (balls.length > 0) framesData[`${frameNumber}`] = balls;
+    // attach running score to frame
+    // attach throws to frame
+    framesData[`${frameNumber}`] = { throws: [], score: undefined };
+    if (balls.length > 0) {
+      console.log("🎳", { framesData: framesData[frameNumber], balls });
+      framesData[`${frameNumber}`].throws = balls;
+      if (score) framesData[`${frameNumber}`].score = score;
+    }
   });
 
   // frame 10
@@ -42,14 +53,17 @@ const compileGameData = (game: HTMLElement) => {
   const tenthBall1 = tenthFrame?.querySelector(".cls_ball1")?.text;
   const tenthBall2 = tenthFrame?.querySelector(".cls_ball2")?.text;
   const tenthBall3 = tenthFrame?.querySelector(".cls_ball3")?.text;
-
-  framesData["10"] = [tenthBall1, tenthBall2, tenthBall3];
-
   // score
   const score = game.parentNode.querySelector(".cls_scoretotal")?.text!;
 
-  if (Object.keys(framesData).length === 10)
+  framesData["10"] = { throws: [], score };
+  framesData["10"].throws = [tenthBall1, tenthBall2, tenthBall3];
+
+  if (Object.keys(framesData).length === 10) {
     return { score, frames: framesData };
+  } else {
+    console.log("🚨 Incomplete game", { framesData });
+  }
 
   return null;
 };
