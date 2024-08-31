@@ -14,14 +14,11 @@ export const links = pgTable("LINKS", {
   url: varchar("url").notNull(),
   emailDate: date("emailDate").notNull(),
   // relationships >
-  gameId: integer("gameId"),
+  // gameId: integer("gameId"),
 });
 
-export const linksRelations = relations(links, ({ one }) => ({
-  game: one(games, {
-    fields: [links.gameId],
-    references: [games.id],
-  }),
+export const linksRelations = relations(links, ({ many }) => ({
+  games: many(games),
 }));
 
 export const games = pgTable("GAMES", {

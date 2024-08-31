@@ -51,7 +51,7 @@ const compileGameData = (game: HTMLElement) => {
   return null;
 };
 
-async function scrapeBowlingData(url: string) {
+export async function scrapeBowlingData(url: string) {
   const response = await fetch(url);
   const html = await response.text();
   const root = parse(html);
@@ -69,8 +69,7 @@ async function scrapeBowlingData(url: string) {
     .map(compileGameData)
     .filter((element) => element != null);
 
-  console.log("✅", { date, location, oil: "house", scores });
-
+  console.log("🎳 Games scrape", { date, scores });
   // if there are no scores, this is a waste of time
   if (scores.length > 0) return { date, location, oil: "house", scores };
 }

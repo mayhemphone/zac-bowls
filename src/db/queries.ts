@@ -142,11 +142,21 @@ export async function insertGameData(
   const gameIds: number[] = [];
   if (!gameData) return undefined;
 
+  console.log(
+    "👿 insertGameData",
+    "\n\ngameData:\n",
+    gameData,
+    "\nlinkId:\n",
+    linkId,
+    "\n\ngameData.scores:\n",
+    gameData.scores
+  );
+
   try {
     await db.transaction(async (tx) => {
       // Insert each game in scores array
-      gameData.scores.forEach(async (game, index) => {
-        if (!game) return;
+      for (const [index, game] of gameData.scores.entries()) {
+        if (!game) continue;
 
         // Insert game
         const insertedGame = await tx
@@ -159,7 +169,7 @@ export async function insertGameData(
             number: index + 1, // assuming game number should be 1 for all games; adjust if necessary
             linkId,
           })
-          .returning({ id: games.id }); //.get();
+          .returning({ id: games.id });
 
         gameIds.push(insertedGame[0].id);
 
@@ -190,11 +200,19 @@ export async function insertGameData(
             }
           }
         }
-      });
+      }
+
+      // do we even need this?
+      //   // update link with gameId
+      //   await tx
+      //     .update(links)
+      //     .set({ gameId: gameIds })
+      //     .where({id:linkId})
     });
-    console.log("Transaction committed successfully");
+
+    console.log("🌟GameInsert Transaction committed successfully");
   } catch (error) {
-    console.error("Transaction failed: ", error);
+    console.error("❌ GameInsert Transaction failed: ", error);
     throw error; // rethrow the error after logging it
   }
 
