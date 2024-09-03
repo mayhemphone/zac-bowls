@@ -14,8 +14,10 @@ import {
 } from "@/components/ui/table";
 
 import { IndexProps } from "@/components/CRUD-Template/Index";
+import IngestionIcon from "@/components/icons/Ingest";
 import LinkOutIcon from "@/components/icons/LinkOut";
-import { getPaginatedGames } from "@/db/queries/games";
+import PopUpPre from "@/components/PopUpPre";
+import { getPaginatedLinks } from "@/db/queries/links";
 
 // style={{
 //   wordBreak: "break-all",
@@ -32,16 +34,19 @@ type Props = Omit<
   | "schema"
   | "items"
 > & {
-  items: Awaited<ReturnType<typeof getPaginatedGames>>;
+  items: Awaited<ReturnType<typeof getPaginatedLinks>>;
 };
 
-const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
+const LinksIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
   console.log("✅", { items });
 
   const handleCreateItem = () => {
     // Logic to handle item creation, such as a database call
   };
 
+  const ingestLink = (id: number | string) => {
+    // Logic to handle item ingestion
+  };
   const handleEditItem = (id: number | string) => {
     // Logic to handle item editing
   };
@@ -69,16 +74,14 @@ const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
           </Button>
         )}
       </div>
-      <div className="border rounded-lg overflow-hidden">
-        <Table>
+      <div className="">
+        <Table className="border rounded-lg">
           <TableHeader>
             <TableRow className="uppercase font-extrabold">
               <TableHead className="">id</TableHead>
-              <TableHead className="">date</TableHead>
-              <TableHead className="">game #</TableHead>
-              <TableHead className="">score</TableHead>
-              <TableHead className=""># of frames</TableHead>
-              <TableHead className="text-center">link</TableHead>
+              <TableHead className="">url</TableHead>
+              <TableHead className="">email date</TableHead>
+              <TableHead className="">games</TableHead>
               <TableHead className="w-[120px] text-center">actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -89,30 +92,42 @@ const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
                   <TableCell>
                     <p>{item.id}</p>
                   </TableCell>
-                  <TableCell>
-                    <p>{item.date}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.number}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.score}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.frames.length}</p>
-                  </TableCell>
                   <TableCell className="text-center">
-                    <a href={item.link?.url} target="_blank" rel="noreferrer">
+                    <a href={item.url} target="_blank" rel="noreferrer">
                       <LinkOutIcon className="h-4 w-4 m-auto " />
                     </a>
+                  </TableCell>
+                  <TableCell>
+                    <p>{item.emailDate}</p>
+                  </TableCell>
+                  <TableCell>
+                    <PopUpPre
+                      str={JSON.stringify(
+                        item.games.map((game: any) => ({
+                          ...game,
+                          rawData: JSON.parse(game.rawData),
+                        })),
+                        null,
+                        2
+                      )}
+                    />
                   </TableCell>
                   {/* actions column */}
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button
+                        onClick={() => ingestLink(item.id)}
+                        size="icon"
+                        variant="ghost"
+                        title="Ingest Game"
+                      >
+                        <IngestionIcon className="h-4 w-4" />
+                      </Button>
+                      <Button
                         onClick={() => handleEditItem(item.id)}
                         size="icon"
                         variant="ghost"
+                        title="Edit Link"
                       >
                         <FilePenIcon className="h-4 w-4" />
                       </Button>
@@ -120,6 +135,7 @@ const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
                         onClick={() => handleDeleteItem(item.id)}
                         size="icon"
                         variant="ghost"
+                        title="Delete Link"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>
@@ -146,4 +162,4 @@ const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
   );
 };
 
-export default GamesIndex;
+export default LinksIndex;

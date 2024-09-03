@@ -1,6 +1,6 @@
 "use client";
 
-import { getLatestGame } from "@/db/queries";
+import { getLatestGame } from "@/db/queries/games";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import Frame from "./Frame";

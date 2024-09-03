@@ -1,4 +1,4 @@
-import { createLink } from "@/db/queries";
+import { createLink } from "@/db/queries/links";
 import { scrapeAndInsertGame } from "@/util/api/injestGame";
 import { NextResponse } from "next/server";
 import { checkAPIKeyValidity } from "../../../util/api/apiKey";

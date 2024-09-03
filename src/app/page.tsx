@@ -1,7 +1,7 @@
 import Average from "@/components/Average";
 import ScatterPlot from "@/components/charts/ScatterPlot";
 import ScoreBoard from "@/components/scoreBoard/ScoreBoard";
-import { getAverageScores, getLatestCompleteGame } from "@/db/queries";
+import { getAverageScores, getLatestCompleteGame } from "@/db/queries/games";
 import { subtractMonths } from "@/util/dates";
 
 export default async function Home() {

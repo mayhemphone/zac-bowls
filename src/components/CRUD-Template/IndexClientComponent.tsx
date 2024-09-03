@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getGamesCount, getPaginatedGames } from "@/db/queries";
+import { getGamesCount, getPaginatedGames } from "@/db/queries/games";
 import { useEffect, useState } from "react";
 
 type Games = Awaited<ReturnType<typeof getPaginatedGames>>;

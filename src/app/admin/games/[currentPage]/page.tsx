@@ -1,6 +1,6 @@
 "use server";
 
-import { getGamesCount, getPaginatedGames } from "@/db/queries";
+import { getGamesCount, getPaginatedGames } from "@/db/queries/games";
 import { redirect } from "next/navigation";
 import GamesIndex from "./GamesIndex";
 
@@ -16,6 +16,7 @@ const Page = async ({ params }: GamePageProps) => {
   const games = await getPaginatedGames(parseInt(currentPage, 10), 10);
   const totalRows = await getGamesCount();
   const currentPageInt = parseInt(currentPage, 10);
+
   return (
     <GamesIndex
       currentPage={currentPageInt}

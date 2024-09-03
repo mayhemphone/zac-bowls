@@ -1,5 +1,5 @@
 //import styles from './Average.module.scss'
-import { getAverageScores } from "@/db/queries";
+import { getAverageScores } from "@/db/queries/games";
 import { subtractMonths } from "@/util/dates";
 import {
   Card,

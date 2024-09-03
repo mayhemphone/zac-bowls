@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAverageScores } from "@/db/queries";
+import { getAverageScores } from "@/db/queries/games";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
 type ScatterPlotProps = {

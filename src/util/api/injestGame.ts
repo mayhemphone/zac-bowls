@@ -1,4 +1,4 @@
-import { insertGameData } from "@/db/queries";
+import { insertGameData } from "@/db/queries/games";
 import { HTMLElement, parse } from "node-html-parser";
 
 export type GamesDataPromise = ReturnType<typeof scrapeBowlingData>;

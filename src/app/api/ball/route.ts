@@ -1,4 +1,4 @@
-import { createBall, getGames } from "@/db/queries";
+import { createBall } from "@/db/queries";
 import { checkAPIKeyValidity } from "@/util/api/apiKey";
 import { NextResponse } from "next/server";
 
