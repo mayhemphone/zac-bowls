@@ -15,6 +15,11 @@ const Page = async ({}: Props) => {
       <h1 className="text-3xl mb-6">Admin</h1>
       <div className="flex flex-col gap-4">
         <AdminCard
+          title="Leagues"
+          description="Manage leagues in the database"
+          href={"/admin/leagues/1"}
+        />
+        <AdminCard
           title="Games"
           description="Manage games in the database"
           href={"/admin/games/1"}

@@ -36,21 +36,56 @@ export const leagues = pgTable("LEAGUES", {
 });
 
 export const leaguesRelations = relations(leagues, ({ many }) => ({
-  leagueTrimesters: many(leagueTrimester),
-  leagueNights: many(leagueNight),
+  leagueTrimesters: many(leagueTrimesters),
+  leagueNights: many(leagueNights),
 }));
 
-export const leagueTrimester = pgTable("LEAGUE_TRIMESTER", {
+export const leagueTrimesters = pgTable("LEAGUE_TRIMESTERS", {
   id: serial("id").primaryKey(),
   number: integer("number").notNull(),
   name: varchar("name").notNull(),
+  leagueId: integer("leagueId").references(() => leagues.id),
 });
 
-export const leagueTrimesterRelations = relations(
-  leagueTrimester,
-  ({ many }) => ({
-    leagueNights: many(leagueNight),
+export const leagueTrimestersRelations = relations(
+  leagueTrimesters,
+  ({ many, one }) => ({
+    league: one(leagues, {
+      fields: [leagueTrimesters.leagueId],
+      references: [leagues.id],
+    }),
+    leagueNights: many(leagueNights),
     oilPatternDurations: many(oilPatternDurations),
+  })
+);
+
+export const leagueNights = pgTable("LEAGUE_NIGHTS", {
+  id: serial("id").primaryKey(),
+  week: integer("week").notNull(),
+  trimester: integer("trimester").notNull(),
+  leagueId: integer("leagueId").references(() => leagues.id),
+  leagueTrimesterId: integer("leagueTrimesterId").references(
+    () => leagueTrimesters.id
+  ),
+  oilPatternId: integer("oilPatternId").references(() => oilPatterns.id),
+});
+
+export const leagueNightRelations = relations(
+  leagueNights,
+  ({ many, one }) => ({
+    league: one(leagues, {
+      fields: [leagueNights.leagueId],
+      references: [leagues.id],
+    }),
+    leagueTrimester: one(leagueTrimesters, {
+      fields: [leagueNights.leagueTrimesterId],
+      references: [leagueTrimesters.id],
+    }),
+    oilPattern: one(oilPatterns, {
+      fields: [leagueNights.oilPatternId],
+      references: [oilPatterns.id],
+    }),
+    games: many(games),
   })
 );
 
@@ -60,25 +95,28 @@ export const oilPatterns = pgTable("OIL_PATTERNS", {
   link: varchar("link"),
 });
 
+export const oilPatternsRelations = relations(oilPatterns, ({ many }) => ({
+  leagueNights: many(leagueNights),
+}));
+
 export const oilPatternDurations = pgTable("OIL_PATTERN_DURATIONS", {
   id: serial("id").primaryKey(),
   startDate: date("startDate").notNull(),
   endDate: date("endDate").notNull(),
-  leagueTrimesterId: integer("leagueTrimesterId").notNull(),
+  leagueTrimesterId: integer("leagueTrimesterId").references(
+    () => leagueTrimesters.id
+  ),
 });
 
-export const leagueNight = pgTable("LEAGUE_NIGHT", {
-  id: serial("id").primaryKey(),
-  week: integer("week").notNull(),
-  trimester: integer("trimester").notNull(),
-  leagueId: integer("leagueId").notNull(),
-  leagueTrimesterId: integer("leagueTrimesterId").notNull(),
-});
-
-export const leagueNightRelations = relations(leagueNight, ({ many, one }) => ({
-  games: many(games),
-  oilPatterns: one(oilPatterns),
-}));
+export const oilPatternDurationsRelations = relations(
+  oilPatternDurations,
+  ({ one }) => ({
+    leagueTrimester: one(leagueTrimesters, {
+      fields: [oilPatternDurations.leagueTrimesterId],
+      references: [leagueTrimesters.id],
+    }),
+  })
+);
 
 // END NEW ----------------------------------------------//
 
@@ -93,8 +131,8 @@ export const games = pgTable("GAMES", {
   number: integer("number"),
   rawData: text("rawData"),
   // relationships >
-  linkId: integer("linkId"),
-  leagueNightId: integer("leagueNightId"),
+  linkId: integer("linkId").references(() => links.id),
+  leagueNightId: integer("leagueNightId").references(() => leagueNights.id),
 });
 
 export const gamesRelations = relations(games, ({ many, one }) => ({
@@ -103,22 +141,26 @@ export const gamesRelations = relations(games, ({ many, one }) => ({
     fields: [games.linkId],
     references: [links.id],
   }),
+  leagueNight: one(leagueNights, {
+    fields: [games.leagueNightId],
+    references: [leagueNights.id],
+  }),
 }));
 
 export const frames = pgTable("FRAMES", {
   id: serial("id").primaryKey(),
   frameNumber: integer("frameNumber").notNull(),
-  // relationships >
-  gameId: integer("gameId"),
   score: varchar("score"),
+  // relationships >
+  gameId: integer("gameId").references(() => games.id),
 });
 
 export const framesRelations = relations(frames, ({ many, one }) => ({
-  throws: many(throws),
   game: one(games, {
     fields: [frames.gameId],
     references: [games.id],
   }),
+  throws: many(throws),
 }));
 
 export const throws = pgTable("THROWS", {
@@ -126,8 +168,8 @@ export const throws = pgTable("THROWS", {
   pins: varchar("pins"),
   throwNumber: integer("throwNumber"), // ???
   // relationships >
-  ballId: integer("ballId"),
-  frameId: integer("frameId"),
+  ballId: integer("ballId").references(() => balls.id),
+  frameId: integer("frameId").references(() => frames.id),
 });
 
 export const throwsRelations = relations(throws, ({ one }) => ({
@@ -150,7 +192,7 @@ export const balls = pgTable("BALLS", {
   diff: decimal("diff").notNull(),
   purchaseDate: date("purchaseDate").notNull(),
   // relationships >
-  manufacturerId: integer("manufacturerId"),
+  manufacturerId: integer("manufacturerId").references(() => manufacturers.id),
 });
 
 export const ballsRelations = relations(balls, ({ one, many }) => ({
@@ -186,6 +228,21 @@ export type SelectThrows = typeof throws.$inferSelect;
 
 export type InsertBall = typeof balls.$inferInsert;
 export type SelectBalls = typeof balls.$inferSelect;
+
+export type InsertLeague = typeof leagues.$inferInsert;
+export type SelectLeagues = typeof leagues.$inferSelect;
+
+export type InsertLeagueTrimester = typeof leagueTrimesters.$inferInsert;
+export type SelectLeagueTrimesters = typeof leagueTrimesters.$inferSelect;
+
+export type InsertOilPattern = typeof oilPatterns.$inferInsert;
+export type SelectOilPatterns = typeof oilPatterns.$inferSelect;
+
+export type InsertOilPatternDuration = typeof oilPatternDurations.$inferInsert;
+export type SelectOilPatternDurations = typeof oilPatternDurations.$inferSelect;
+
+export type InsertLeagueNight = typeof leagueNights.$inferInsert;
+export type SelectLeagueNights = typeof leagueNights.$inferSelect;
 
 export type InsertManufacturer = typeof manufacturers.$inferInsert;
 export type SelectManufacturers = typeof manufacturers.$inferSelect;
