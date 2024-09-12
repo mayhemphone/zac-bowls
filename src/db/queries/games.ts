@@ -126,7 +126,7 @@ export async function insertGameData(
           .values({
             date: gameData.date,
             score: parseInt(game.score, 10),
-            oil: gameData.oil,
+            // oil: gameData.oil,
             location: gameData.location,
             number: index + 1, // assuming game number should be 1 for all games; adjust if necessary
             linkId,
