@@ -21,17 +21,80 @@ export const linksRelations = relations(links, ({ many }) => ({
   games: many(games),
 }));
 
+// NEW ----------------------------------------------//
+
+export const leagues = pgTable("LEAGUES", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  lsLeagueId: integer("lsLeagueId").notNull(),
+  day: varchar("day").notNull(),
+  time: varchar("time").notNull(),
+  startDate: date("startDate").notNull(),
+  endDate: date("endDate").notNull(),
+  season: varchar("season").notNull(),
+  position: varchar("position").notNull(), // sub or team member or captain?
+});
+
+export const leaguesRelations = relations(leagues, ({ many }) => ({
+  leagueTrimesters: many(leagueTrimester),
+  leagueNights: many(leagueNight),
+}));
+
+export const leagueTrimester = pgTable("LEAGUE_TRIMESTER", {
+  id: serial("id").primaryKey(),
+  number: integer("number").notNull(),
+  name: varchar("name").notNull(),
+});
+
+export const leagueTrimesterRelations = relations(
+  leagueTrimester,
+  ({ many }) => ({
+    leagueNights: many(leagueNight),
+    oilPatternDurations: many(oilPatternDurations),
+  })
+);
+
+export const oilPatterns = pgTable("OIL_PATTERNS", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  link: varchar("link"),
+});
+
+export const oilPatternDurations = pgTable("OIL_PATTERN_DURATIONS", {
+  id: serial("id").primaryKey(),
+  startDate: date("startDate").notNull(),
+  endDate: date("endDate").notNull(),
+  leagueTrimesterId: integer("leagueTrimesterId").notNull(),
+});
+
+export const leagueNight = pgTable("LEAGUE_NIGHT", {
+  id: serial("id").primaryKey(),
+  week: integer("week").notNull(),
+  trimester: integer("trimester").notNull(),
+  leagueId: integer("leagueId").notNull(),
+  leagueTrimesterId: integer("leagueTrimesterId").notNull(),
+});
+
+export const leagueNightRelations = relations(leagueNight, ({ many, one }) => ({
+  games: many(games),
+  oilPatterns: one(oilPatterns),
+}));
+
+// END NEW ----------------------------------------------//
+
+// when adding a game, if it isn't a league date, its just practice, and it's just a loosy
+// can fetch by searching for games with null leagueNightId
 export const games = pgTable("GAMES", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
   score: integer("score").notNull(),
-  oil: varchar("oil").default("house"),
   location: varchar("location").default("west seattle bowl").notNull(), // do i migrate this to locations? idk
   comments: text("comments"),
   number: integer("number"),
   rawData: text("rawData"),
   // relationships >
   linkId: integer("linkId"),
+  leagueNightId: integer("leagueNightId"),
 });
 
 export const gamesRelations = relations(games, ({ many, one }) => ({
