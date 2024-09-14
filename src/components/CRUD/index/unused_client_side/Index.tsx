@@ -19,24 +19,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import FilePenIcon from "../icons/FilePen";
-import TrashIcon from "../icons/Trash";
-
-export type IndexProps = {
-  currentPage: number;
-  pageSize: number;
-  totalRows: number;
-  items: { [key: string]: any }[]; // this needs to be dynamic? or does it?
-  handleCreateItem?: () => void;
-  handleEditItem: (id: number | string) => void;
-  handleDeleteItem: (id: number | string) => void;
-  schema: {
-    header: string;
-    prop: string;
-    length?: boolean;
-    object?: boolean;
-  }[];
-};
+import { IndexProps } from "@/types";
+import FilePenIcon from "../../../icons/FilePen";
+import TrashIcon from "../../../icons/Trash";
 
 export default function Index({
   schema,

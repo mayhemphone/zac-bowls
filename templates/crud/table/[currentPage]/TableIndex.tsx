@@ -13,8 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { IndexProps } from "@/components/CRUD-Template/Index";
 import { getPaginatedLeagues } from "@/db/queries/leagues";
+import { type IndexProps } from "@/types";
 
 type Props = Omit<
   IndexProps,

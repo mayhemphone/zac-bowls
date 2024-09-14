@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import SignedIn from "@/components/SignedIn";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
@@ -25,7 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      suppressHydrationWarning={true} // i would rather fix the issue, but no fucking clue why this is happening
+    >
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col items-center",
@@ -49,6 +53,7 @@ export default function RootLayout({
               </div>
             </nav>
             <div className="flex-1 w-full">{children}</div>
+            <Toaster />
           </div>
         </ThemeProvider>
       </body>

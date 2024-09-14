@@ -6,11 +6,21 @@ import {
   InsertFrame,
   InsertManufacturer,
   InsertThrow,
+  TableName,
   balls,
   frames,
   manufacturers,
+  tables,
   throws,
 } from "./schema";
+
+// generic query function to query a table by its name
+export async function queryTable<T extends TableName>(tableName: T) {
+  "use server";
+  console.log("server side ", { tableName });
+  if (!tables[tableName]) throw new Error(`Table ${tableName} not found`);
+  return await db.query[tableName].findMany({});
+}
 
 export async function createFrame(data: InsertFrame) {
   return await db.insert(frames).values(data).returning({ id: frames.id });

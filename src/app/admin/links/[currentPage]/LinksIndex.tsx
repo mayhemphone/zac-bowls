@@ -13,11 +13,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { IndexProps } from "@/components/CRUD-Template/Index";
 import IngestionIcon from "@/components/icons/Ingest";
 import LinkOutIcon from "@/components/icons/LinkOut";
 import PopUpPre from "@/components/PopUpPre";
 import { getPaginatedLinks } from "@/db/queries/links";
+import { type IndexProps } from "@/types";
 
 // style={{
 //   wordBreak: "break-all",

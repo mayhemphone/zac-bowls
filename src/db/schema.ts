@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   date,
   decimal,
@@ -21,12 +21,10 @@ export const linksRelations = relations(links, ({ many }) => ({
   games: many(games),
 }));
 
-// NEW ----------------------------------------------//
-
 export const leagues = pgTable("LEAGUES", {
   id: serial("id").primaryKey(),
   name: varchar("name").notNull(),
-  lsLeagueId: integer("lsLeagueId").notNull(),
+  lsLeagueId: integer("lsLeagueId"),
   day: varchar("day").notNull(),
   time: varchar("time").notNull(),
   startDate: date("startDate").notNull(),
@@ -44,7 +42,9 @@ export const leagueTrimesters = pgTable("LEAGUE_TRIMESTERS", {
   id: serial("id").primaryKey(),
   number: integer("number").notNull(),
   name: varchar("name").notNull(),
-  leagueId: integer("leagueId").references(() => leagues.id),
+  leagueId: integer("leagueId")
+    .references(() => leagues.id)
+    .notNull(),
 });
 
 export const leagueTrimestersRelations = relations(
@@ -62,11 +62,12 @@ export const leagueTrimestersRelations = relations(
 export const leagueNights = pgTable("LEAGUE_NIGHTS", {
   id: serial("id").primaryKey(),
   week: integer("week").notNull(),
-  trimester: integer("trimester").notNull(),
-  leagueId: integer("leagueId").references(() => leagues.id),
-  leagueTrimesterId: integer("leagueTrimesterId").references(
-    () => leagueTrimesters.id
-  ),
+  leagueId: integer("leagueId")
+    .references(() => leagues.id)
+    .notNull(),
+  leagueTrimesterId: integer("leagueTrimesterId")
+    .references(() => leagueTrimesters.id)
+    .notNull(),
   oilPatternId: integer("oilPatternId").references(() => oilPatterns.id),
 });
 
@@ -118,8 +119,6 @@ export const oilPatternDurationsRelations = relations(
   })
 );
 
-// END NEW ----------------------------------------------//
-
 // when adding a game, if it isn't a league date, its just practice, and it's just a loosy
 // can fetch by searching for games with null leagueNightId
 export const games = pgTable("GAMES", {
@@ -150,9 +149,11 @@ export const gamesRelations = relations(games, ({ many, one }) => ({
 export const frames = pgTable("FRAMES", {
   id: serial("id").primaryKey(),
   frameNumber: integer("frameNumber").notNull(),
-  score: varchar("score"),
+  score: varchar("score").notNull(),
   // relationships >
-  gameId: integer("gameId").references(() => games.id),
+  gameId: integer("gameId")
+    .references(() => games.id)
+    .notNull(),
 });
 
 export const framesRelations = relations(frames, ({ many, one }) => ({
@@ -165,11 +166,13 @@ export const framesRelations = relations(frames, ({ many, one }) => ({
 
 export const throws = pgTable("THROWS", {
   id: serial("id").primaryKey(),
-  pins: varchar("pins"),
-  throwNumber: integer("throwNumber"), // ???
+  pins: varchar("pins").notNull(),
+  throwNumber: integer("throwNumber").notNull(),
   // relationships >
   ballId: integer("ballId").references(() => balls.id),
-  frameId: integer("frameId").references(() => frames.id),
+  frameId: integer("frameId")
+    .references(() => frames.id)
+    .notNull(),
 });
 
 export const throwsRelations = relations(throws, ({ one }) => ({
@@ -192,7 +195,9 @@ export const balls = pgTable("BALLS", {
   diff: decimal("diff").notNull(),
   purchaseDate: date("purchaseDate").notNull(),
   // relationships >
-  manufacturerId: integer("manufacturerId").references(() => manufacturers.id),
+  manufacturerId: integer("manufacturerId")
+    .references(() => manufacturers.id)
+    .notNull(),
 });
 
 export const ballsRelations = relations(balls, ({ one, many }) => ({
@@ -205,7 +210,7 @@ export const ballsRelations = relations(balls, ({ one, many }) => ({
 
 export const manufacturers = pgTable("MANUFACTURERS", {
   id: serial("id").primaryKey(),
-  name: varchar("name"),
+  name: varchar("name").notNull(),
 });
 
 export const manufacturerRelations = relations(manufacturers, ({ many }) => ({
@@ -246,3 +251,44 @@ export type SelectLeagueNights = typeof leagueNights.$inferSelect;
 
 export type InsertManufacturer = typeof manufacturers.$inferInsert;
 export type SelectManufacturers = typeof manufacturers.$inferSelect;
+
+export const tables = {
+  leagues,
+  games,
+  frames,
+  throws,
+  balls,
+  manufacturers,
+  leagueNights,
+  oilPatterns,
+  links,
+  leagueTrimesters,
+} as const;
+
+export interface BaseTable {
+  id: number;
+  name: string;
+}
+
+// Derive TableName as the keys of the tables object
+export type TableName = keyof typeof tables;
+
+// Derive TableSelectTypes by mapping each table name to its inferred select model type
+export type TableSelectTypes = {
+  [K in TableName]: InferSelectModel<(typeof tables)[K]> & BaseTable;
+};
+
+// Derive TableInsertTypes by mapping each table name to its inferred insert model type
+export type TableInsertTypes = {
+  [K in TableName]: InferInsertModel<(typeof tables)[K]>;
+};
+
+/**
+ * Type guard to check if a string is a valid TableName.
+ *
+ * @param name - The table name to validate.
+ * @returns `true` if `name` is a valid TableName, otherwise `false`.
+ */
+export function isTableName(name: string): name is TableName {
+  return Object.keys(tables).includes(name);
+}

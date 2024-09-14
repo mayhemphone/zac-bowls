@@ -13,15 +13,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { IndexProps } from "@/components/CRUD-Template/Index";
 import { getPaginatedLeagues } from "@/db/queries/leagues";
-
-// style={{
-//   wordBreak: "break-all",
-//   wordWrap: "break-word",
-//   overflowWrap: "break-word",
-//   whiteSpace: "normal",
-// }}
+import { type IndexProps } from "@/types";
+import Link from "next/link";
 
 type Props = Omit<
   IndexProps,
@@ -62,11 +56,10 @@ const LeaguesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
     <div className="w-full mx-auto py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold uppercase">Leagues</h1>
-        {handleCreateItem && (
-          <Button onClick={() => handleCreateItem()} size="sm">
-            Create New
-          </Button>
-        )}
+
+        <Link href="create">
+          <Button size="sm">Create New</Button>
+        </Link>
       </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>

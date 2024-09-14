@@ -13,9 +13,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { IndexProps } from "@/components/CRUD-Template/Index";
 import LinkOutIcon from "@/components/icons/LinkOut";
 import { getPaginatedGames } from "@/db/queries/games";
+import { type IndexProps } from "@/types";
 
 // style={{
 //   wordBreak: "break-all",
