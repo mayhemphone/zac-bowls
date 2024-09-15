@@ -3,6 +3,7 @@ import SignedIn from "@/components/SignedIn";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import Link from "next/link";
@@ -36,6 +37,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <SpeedInsights />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

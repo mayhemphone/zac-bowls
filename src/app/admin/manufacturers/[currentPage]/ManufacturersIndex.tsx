@@ -58,7 +58,6 @@ const ManufacturersIndex = ({
   const handleDeleteItem = async (id: number) => {
     // Logic to handle item deletion
     await deleteFunction(id);
-    router.refresh();
   };
 
   const indexOfLastItem = currentPage * pageSize;

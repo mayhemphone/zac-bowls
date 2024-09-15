@@ -1,4 +1,5 @@
 import { count, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { db } from "../";
 import { InsertManufacturer, manufacturers } from "../schema";
 
@@ -41,8 +42,6 @@ export async function getManufacturerById(id: number) {
 
 export async function deleteManufacturer(id: number) {
   "use server";
-  return await db
-    .delete(manufacturers)
-    .where(eq(manufacturers.id, id))
-    .returning();
+  await db.delete(manufacturers).where(eq(manufacturers.id, id));
+  revalidatePath("/admin/manufacturers/1");
 }

@@ -24,6 +24,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@unkey/api": "^0.20.7",
     "@vercel/postgres": "^0.8.0",
+    "@vercel/speed-insights": "^1.0.12",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
