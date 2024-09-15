@@ -15,8 +15,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { getPaginatedLeagues } from "@/db/queries/leagues";
+import { getPaginatedManufacturers } from "@/db/queries/manufacturers";
 import { type IndexProps } from "@/types";
+import { useRouter } from "next/navigation";
 
 type Props = Omit<
   IndexProps,
@@ -26,7 +27,7 @@ type Props = Omit<
   | "schema"
   | "items"
 > & {
-  items: Awaited<ReturnType<typeof getPaginatedLeagues>>;
+  items: Awaited<ReturnType<typeof getPaginatedManufacturers>>;
   insertFunction: any;
   deleteFunction: (id: number) => Promise<
     {
@@ -35,7 +36,7 @@ type Props = Omit<
   >;
 };
 
-const LeaguesIndex = ({
+const ManufacturersIndex = ({
   items,
   pageSize,
   currentPage,
@@ -44,6 +45,7 @@ const LeaguesIndex = ({
   deleteFunction,
 }: Props) => {
   console.log("✅", { items });
+  const router = useRouter();
 
   const handleCreateItem = () => {
     // Logic to handle item creation, such as a database call
@@ -53,8 +55,10 @@ const LeaguesIndex = ({
     // Logic to handle item editing
   };
 
-  const handleDeleteItem = (id: number | string) => {
+  const handleDeleteItem = async (id: number) => {
     // Logic to handle item deletion
+    await deleteFunction(id);
+    router.refresh();
   };
 
   const indexOfLastItem = currentPage * pageSize;
@@ -69,13 +73,16 @@ const LeaguesIndex = ({
   return (
     <div className="w-full mx-auto py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold uppercase">Leagues</h1>
+        <h1 className="text-2xl font-bold uppercase">Manufacturers</h1>
 
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline">Create New</Button>
           </DialogTrigger>
-          <CreateForm tableName={"leagues"} insertRecord={insertFunction} />
+          <CreateForm
+            tableName={"manufacturers"}
+            insertRecord={insertFunction as any}
+          />
         </Dialog>
       </div>
       <div className="border rounded-lg overflow-hidden">
@@ -84,13 +91,7 @@ const LeaguesIndex = ({
             <TableRow className="uppercase font-extrabold">
               <TableHead className="">id</TableHead>
               <TableHead className="">name</TableHead>
-              <TableHead className="">ls league id</TableHead>
-              <TableHead className="">day</TableHead>
-              <TableHead className="">time</TableHead>
-              <TableHead className="">start date</TableHead>
-              <TableHead className="">end date</TableHead>
-              <TableHead className="">season</TableHead>
-              <TableHead className="">position</TableHead>
+              <TableHead className="">ball #</TableHead>
               <TableHead className="w-[120px] text-center">actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -98,44 +99,17 @@ const LeaguesIndex = ({
             {items.map((item) => {
               return (
                 <TableRow key={item.id}>
-                  <TableCell>
+                  <TableCell className="">
                     <p>{item.id}</p>
                   </TableCell>
                   <TableCell>
                     <p>{item.name}</p>
                   </TableCell>
-                  <TableCell>
-                    <p>{item.lsLeagueId}</p>
+                  <TableCell className="">
+                    <p>{item.balls.length}</p>
                   </TableCell>
-                  <TableCell>
-                    <p>{item.day}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.time}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.startDate}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.endDate}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.season}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.position}</p>
-                  </TableCell>
-                  <TableCell>
-                    {item.leagueTrimesters.map((tri) => (
-                      <p key={tri.id}>{tri.name}</p>
-                    ))}
-                  </TableCell>
-                  <TableCell>
-                    <p>{item.leagueNights.length}</p>
-                  </TableCell>
-
                   {/* actions column */}
-                  <TableCell>
+                  <TableCell className="w-[20px]">
                     <div className="flex items-center gap-2">
                       <Button
                         onClick={() => handleEditItem(item.id)}
@@ -174,4 +148,4 @@ const LeaguesIndex = ({
   );
 };
 
-export default LeaguesIndex;
+export default ManufacturersIndex;

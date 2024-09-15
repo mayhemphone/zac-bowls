@@ -127,7 +127,7 @@ export const games = pgTable("GAMES", {
   score: integer("score").notNull(),
   location: varchar("location").default("west seattle bowl").notNull(), // do i migrate this to locations? idk
   comments: text("comments"),
-  number: integer("number"),
+  gameNumber: integer("number"),
   rawData: text("rawData"),
   // relationships >
   linkId: integer("linkId").references(() => links.id),
@@ -252,17 +252,30 @@ export type SelectLeagueNights = typeof leagueNights.$inferSelect;
 export type InsertManufacturer = typeof manufacturers.$inferInsert;
 export type SelectManufacturers = typeof manufacturers.$inferSelect;
 
+export type InsertRecord =
+  | InsertLink
+  | InsertGame
+  | InsertFrame
+  | InsertThrow
+  | InsertBall
+  | InsertLeague
+  | InsertLeagueTrimester
+  | InsertOilPattern
+  | InsertOilPatternDuration
+  | InsertLeagueNight
+  | InsertManufacturer;
+
 export const tables = {
+  links,
   leagues,
+  leagueTrimesters,
+  leagueNights,
   games,
   frames,
   throws,
   balls,
   manufacturers,
-  leagueNights,
   oilPatterns,
-  links,
-  leagueTrimesters,
 } as const;
 
 export interface BaseTable {

@@ -127,9 +127,8 @@ export async function insertGameData(
           .values({
             date: gameData.date,
             score: parseInt(game.score, 10),
-            // oil: gameData.oil,
             location: gameData.location,
-            number: index + 1, // assuming game number should be 1 for all games; adjust if necessary
+            gameNumber: index + 1, // assuming game number should be 1 for all games; adjust if necessary
             linkId,
             rawData: JSON.stringify(game),
           })
@@ -140,29 +139,32 @@ export async function insertGameData(
         // Insert frames
         for (const frameNumber in game.frames) {
           const frameValues = game.frames[frameNumber];
-          const insertedFrame = await tx
-            .insert(frames)
-            .values({
-              frameNumber: parseInt(frameNumber, 10),
-              gameId: insertedGame[0].id,
-              score: frameValues.score,
-            })
-            .returning({ id: frames.id });
+          if (frameValues?.score !== undefined) {
+            const insertedFrame = await tx
+              .insert(frames)
+              .values({
+                frameNumber: 3,
+                gameId: 3,
 
-          // Insert throws for each frame
-          let throwNumber = 1;
-          if (frameValues.throws) {
-            for (const value of frameValues.throws) {
-              if (value) {
-                await tx
-                  .insert(throws)
-                  .values({
-                    frameId: insertedFrame[0].id,
-                    throwNumber,
-                    pins: value,
-                  })
-                  .returning({ id: throws.id });
-                throwNumber++;
+                score: frameValues.score,
+              })
+              .returning({ id: frames.id });
+
+            // Insert throws for each frame
+            let throwNumber = 1;
+            if (frameValues.throws) {
+              for (const value of frameValues.throws) {
+                if (value) {
+                  await tx
+                    .insert(throws)
+                    .values({
+                      frameId: insertedFrame[0].id,
+                      throwNumber,
+                      pins: value,
+                    })
+                    .returning({ id: throws.id });
+                  throwNumber++;
+                }
               }
             }
           }

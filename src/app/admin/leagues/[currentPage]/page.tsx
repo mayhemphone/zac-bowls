@@ -1,6 +1,11 @@
 "use server";
 
-import { getLeaguesCount, getPaginatedLeagues } from "@/db/queries/leagues";
+import {
+  createLeague,
+  deleteLeague,
+  getLeaguesCount,
+  getPaginatedLeagues,
+} from "@/db/queries/leagues";
 import { redirect } from "next/navigation";
 import LeaguesIndex from "./LeaguesIndex";
 
@@ -23,6 +28,8 @@ const Page = async ({ params }: GamePageProps) => {
       pageSize={10}
       totalRows={totalRows}
       items={leagues}
+      insertFunction={createLeague}
+      deleteFunction={deleteLeague}
     />
   );
 };

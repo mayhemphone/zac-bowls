@@ -17,19 +17,23 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
 import { RelatedSelect } from "@/components/RelatedSelect";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { tables } from "@/db/schema";
+import { InsertManufacturer, tables } from "@/db/schema";
 import {
   buildFormInputs,
   generateZodSchema,
   inputType,
 } from "@/util/drizzleToZod";
+
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { QueryResult } from "@vercel/postgres";
+import { useRouter } from "next/navigation";
 
 export type Form = UseFormReturn<
   {
@@ -67,12 +71,9 @@ export const returnInput = (
               className=""
               {...field}
               type={inputType(type)}
-              // ref={field.ref} // Ensure ref is passed for registration
-              // onChange={field.onChange} // Handle change events
               {...form.register(name)}
             />
           </FormControl>
-          {/* <FormDescription>This is your public display name.</FormDescription> */}
           <FormMessage />
         </FormItem>
       )}
@@ -80,11 +81,14 @@ export const returnInput = (
   );
 };
 
-export default function InputForm({
+export default function CreateForm({
   tableName,
+  insertRecord,
 }: {
   tableName: keyof typeof tables;
+  insertRecord: (data: { [x: string]: any }) => Promise<QueryResult<any>>;
 }) {
+  const router = useRouter();
   const dynamicSchema = generateZodSchema(tables[tableName]);
 
   type TableGuess = (typeof tables)[keyof typeof tables];
@@ -93,7 +97,7 @@ export default function InputForm({
     resolver: zodResolver(dynamicSchema),
   });
 
-  const onSubmit: SubmitHandler<any> = (
+  const onSubmit: SubmitHandler<any> = async (
     data: z.infer<typeof dynamicSchema>
   ) => {
     console.log("😀");
@@ -101,35 +105,60 @@ export default function InputForm({
       title: "You submitted the following values:",
       data,
     });
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+
+    try {
+      const res = await insertRecord(data as InsertManufacturer);
+      toast({
+        title: "You submitted the following values:",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(res, null, 2)}</code>
+          </pre>
+        ),
+      });
+    } catch (error) {
+      console.error("❌ InsertRecord Transaction failed: ", error);
+      throw error; // rethrow the error after logging it
+    }
   };
 
   return (
-    <Card className="w-11/12   shadow-md max-w-4xl md:w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      <CardHeader>
-        <CardTitle>Create {tableName.slice(0, -1)}</CardTitle>
-      </CardHeader>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
-          <CardContent>
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Create {tableName.slice(0, -1)}</DialogTitle>
+        <DialogDescription>
+          Manually insert a new {tableName.slice(0, -1)}
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex items-center space-x-2">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-6"
+          >
             {buildFormInputs<TableGuess>(form, tables[tableName])}
-          </CardContent>
-          <CardFooter>
-            <Button type="submit">Submit</Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+            <DialogFooter className="sm:justify-start">
+              <div className="flex-1">
+                <Button type="submit">Submit</Button>
+              </div>
+              <div className="flex gap-4">
+                <Button type="reset" onClick={form.reset}>
+                  Reset
+                </Button>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={form.reset}
+                  >
+                    Close
+                  </Button>
+                </DialogClose>
+              </div>
+            </DialogFooter>
+          </form>
+        </Form>
+      </div>
+    </DialogContent>
   );
 }

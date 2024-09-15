@@ -93,7 +93,7 @@ const GamesIndex = ({ items, pageSize, currentPage, totalRows }: Props) => {
                     <p>{item.date}</p>
                   </TableCell>
                   <TableCell>
-                    <p>{item.number}</p>
+                    <p>{item.gameNumber}</p>
                   </TableCell>
                   <TableCell>
                     <p>{item.score}</p>

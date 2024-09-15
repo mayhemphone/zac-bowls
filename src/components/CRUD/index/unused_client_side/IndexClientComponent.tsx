@@ -72,7 +72,7 @@ export default function Index() {
                 <TableCell>
                   {new Date(item.date).toLocaleDateString("en-US")}
                 </TableCell>
-                <TableCell>{item.number}</TableCell>
+                <TableCell>{item.gameNumber}</TableCell>
                 <TableCell>{item.score}</TableCell>
                 <TableCell>{item.frames?.length}</TableCell>
 
