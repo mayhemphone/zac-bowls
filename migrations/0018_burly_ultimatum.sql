@@ -1,0 +1,2 @@
+ALTER TABLE "FRAMES" ALTER COLUMN "score" SET DATA TYPE varchar;--> statement-breakpoint
+ALTER TABLE "MANUFACTURERS" ADD CONSTRAINT "MANUFACTURERS_name_unique" UNIQUE("name");

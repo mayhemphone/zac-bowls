@@ -27,7 +27,7 @@ export function RelatedSelect<T extends Record<string, any>>({
   col,
 }: {
   form: UseFormReturn<T>;
-  col: any;
+  col: any; // TODO: infer the type of the column from the table name.  similar to the create form create function
 }) {
   const [relatedData, setRelatedData] = useState<any[]>([]);
 
@@ -79,7 +79,6 @@ export function RelatedSelect<T extends Record<string, any>>({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {/* TODO: fetch these from related table */}
               {relatedData.length > 0 &&
                 relatedData.map((item, i) => (
                   <SelectItem key={i} value={item.id}>
