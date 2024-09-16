@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { queryTable } from "@/actions/queryTable";
 import {
   FormControl,
   FormDescription,
@@ -17,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { queryTable } from "@/db/queries";
 import { isTableName } from "@/db/schema";
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";

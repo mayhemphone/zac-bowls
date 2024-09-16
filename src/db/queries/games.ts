@@ -1,5 +1,4 @@
 // TODO - REMOVE! this exposes shit!
-"use server";
 
 import { GamesData } from "@/util/api/injestGame";
 import { count, sql } from "drizzle-orm";
