@@ -79,7 +79,6 @@ export function RelatedSelect<T extends Record<string, any>>({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {/* TODO: fetch these from related table */}
               {relatedData.length > 0 &&
                 relatedData.map((item, i) => (
                   <SelectItem key={i} value={item.id}>
