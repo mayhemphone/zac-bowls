@@ -1,6 +1,8 @@
+// TODO: i dont think any of this is needed?  i dont think it's used anywhere
+
 import { checkAPIKeyValidity } from "@/util/api/apiKey";
 import { NextResponse } from "next/server";
-import { HTMLElement, parse } from "node-html-parser";
+import { parse } from "node-html-parser";
 
 async function scrapeNames(url: string) {
   const response = await fetch(url);
