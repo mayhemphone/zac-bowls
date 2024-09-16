@@ -37,13 +37,11 @@ export const returnInput = (
   type: string,
   name: string
 ) => {
-  console.log({ form, column, type, name });
+  // console.log({ form, column, type, name });
 
-  // I'm filtering out id fields, so the rest of serial types are relational ids
-  //  would be cool to populate a dropdown with all the avaialble related items to select the id
+  // I'm filtering out id fields
+  // so if a type integer and has Id at the end, it's a relational id
 
-  // For instance, if this is a leagueTrimester,
-  //  I'd want to populate a dropdown with all the leagues that are available
   if (type === "PgInteger" && name.slice(-2) === "Id") {
     return <RelatedSelect key={name} form={form} col={column} />;
   }
