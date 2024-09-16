@@ -4,6 +4,8 @@ import ScoreBoard from "@/components/scoreBoard/ScoreBoard";
 import { getAverageScores, getLatestCompleteGame } from "@/db/queries/games";
 import { subtractMonths } from "@/util/dates";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const avgScores = await getAverageScores({
     start: subtractMonths(360),
