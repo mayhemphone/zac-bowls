@@ -15,6 +15,7 @@ interface ManufacturerPageProps {
 
 const Page = async ({ params }: ManufacturerPageProps) => {
   const { currentPage } = params;
+  // redirect to first page if no page is provided
 
   if (!parseInt(currentPage, 10)) redirect("/admin/manufacturers/1");
 
@@ -31,7 +32,7 @@ const Page = async ({ params }: ManufacturerPageProps) => {
       pageSize={10}
       totalRows={totalRows}
       items={manufacturers}
-      insertFunction={createManufacturer}
+      insertRecord={createManufacturer} // is this the non plain object?
       deleteFunction={deleteManufacturer}
     />
   );

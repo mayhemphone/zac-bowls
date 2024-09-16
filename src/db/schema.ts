@@ -1,4 +1,4 @@
-import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   date,
   decimal,
@@ -8,6 +8,8 @@ import {
   text,
   varchar,
 } from "drizzle-orm/pg-core";
+
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const links = pgTable("LINKS", {
   id: serial("id").primaryKey(),
@@ -252,19 +254,6 @@ export type SelectLeagueNights = typeof leagueNights.$inferSelect;
 export type InsertManufacturer = typeof manufacturers.$inferInsert;
 export type SelectManufacturers = typeof manufacturers.$inferSelect;
 
-export type InsertRecord =
-  | InsertLink
-  | InsertGame
-  | InsertFrame
-  | InsertThrow
-  | InsertBall
-  | InsertLeague
-  | InsertLeagueTrimester
-  | InsertOilPattern
-  | InsertOilPatternDuration
-  | InsertLeagueNight
-  | InsertManufacturer;
-
 export const tables = {
   links,
   leagues,
@@ -276,6 +265,7 @@ export const tables = {
   balls,
   manufacturers,
   oilPatterns,
+  oilPatternDurations,
 } as const;
 
 export interface BaseTable {
@@ -283,18 +273,41 @@ export interface BaseTable {
   name: string;
 }
 
-// Derive TableName as the keys of the tables object
+export const insertSchemas = {
+  manufacturers: createInsertSchema(manufacturers),
+  links: createInsertSchema(links),
+  games: createInsertSchema(games),
+  frames: createInsertSchema(frames),
+  throws: createInsertSchema(throws),
+  balls: createInsertSchema(balls),
+  leagues: createInsertSchema(leagues),
+  leagueTrimesters: createInsertSchema(leagueTrimesters),
+  oilPatterns: createInsertSchema(oilPatterns),
+  oilPatternDurations: createInsertSchema(oilPatternDurations),
+  leagueNights: createInsertSchema(leagueNights),
+};
+
+export const selectSchemas = {
+  manufacturers: createSelectSchema(manufacturers),
+  links: createSelectSchema(links),
+  games: createSelectSchema(games),
+  frames: createSelectSchema(frames),
+  throws: createSelectSchema(throws),
+  balls: createSelectSchema(balls),
+  leagues: createSelectSchema(leagues),
+  leagueTrimesters: createSelectSchema(leagueTrimesters),
+  oilPatterns: createSelectSchema(oilPatterns),
+  oilPatternDurations: createSelectSchema(oilPatternDurations),
+  leagueNights: createSelectSchema(leagueNights),
+};
+
+import { z } from "zod";
+
+export type InsertRecordFunction<T extends keyof typeof insertSchemas> = (
+  data: z.infer<(typeof insertSchemas)[T]>
+) => Promise<Object>;
+
 export type TableName = keyof typeof tables;
-
-// Derive TableSelectTypes by mapping each table name to its inferred select model type
-export type TableSelectTypes = {
-  [K in TableName]: InferSelectModel<(typeof tables)[K]> & BaseTable;
-};
-
-// Derive TableInsertTypes by mapping each table name to its inferred insert model type
-export type TableInsertTypes = {
-  [K in TableName]: InferInsertModel<(typeof tables)[K]>;
-};
 
 /**
  * Type guard to check if a string is a valid TableName.

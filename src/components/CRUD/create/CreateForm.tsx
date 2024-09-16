@@ -1,7 +1,8 @@
+// components/CRUD/create/CreateForm.tsx
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm, UseFormReturn } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -16,14 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
-import { RelatedSelect } from "@/components/RelatedSelect";
-import { InsertManufacturer, tables } from "@/db/schema";
-import {
-  buildFormInputs,
-  generateZodSchema,
-  inputType,
-} from "@/util/drizzleToZod";
+import { insertSchemas, tables } from "@/db/schema";
+import { buildFormInputs, inputType } from "@/util/drizzleToZod";
 
+import { RelatedSelect } from "@/components/RelatedSelect";
 import {
   DialogClose,
   DialogContent,
@@ -32,20 +29,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { QueryResult } from "@vercel/postgres";
-import { useRouter } from "next/navigation";
+import { InsertRecordFunction, TableName } from "@/db/schema";
 
-export type Form = UseFormReturn<
-  {
-    [x: string]: any;
-  },
-  any,
-  undefined
->;
+interface CreateFormProps<T extends TableName> {
+  tableName: T;
+  insertRecord: InsertRecordFunction<T>;
+}
 
-export const returnInput = (
-  form: Form,
-  column: any,
+export const returnInput = <T extends Record<string, any>>(
+  form: any, // can't get this typed
+  column: any, // cant' get this typed
   type: string,
   name: string
 ) => {
@@ -62,7 +55,8 @@ export const returnInput = (
     <FormField
       key={name}
       control={form.control}
-      name={name}
+      name={"name"}
+      defaultValue={""}
       render={({ field }) => (
         <FormItem className="">
           <FormLabel className="">{name}</FormLabel>
@@ -71,7 +65,7 @@ export const returnInput = (
               className=""
               {...field}
               type={inputType(type)}
-              {...form.register(name)}
+              // {...form.register(name)}
             />
           </FormControl>
           <FormMessage />
@@ -81,25 +75,18 @@ export const returnInput = (
   );
 };
 
-export default function CreateForm({
+const CreateForm = <T extends TableName>({
   tableName,
   insertRecord,
-}: {
-  tableName: keyof typeof tables;
-  insertRecord: (data: { [x: string]: any }) => Promise<QueryResult<any>>;
-}) {
-  const router = useRouter();
-  const dynamicSchema = generateZodSchema(tables[tableName]);
+}: CreateFormProps<T>) => {
+  const dynamicSchema = insertSchemas[tableName];
+  type DynamicType = z.infer<typeof dynamicSchema>;
 
-  type TableGuess = (typeof tables)[keyof typeof tables];
-
-  const form = useForm<z.infer<typeof dynamicSchema>>({
+  const form = useForm<DynamicType>({
     resolver: zodResolver(dynamicSchema),
   });
 
-  const onSubmit: SubmitHandler<any> = async (
-    data: z.infer<typeof dynamicSchema>
-  ) => {
+  const onSubmit: SubmitHandler<DynamicType> = async (data) => {
     console.log("😀");
     console.log({
       title: "You submitted the following values:",
@@ -107,7 +94,7 @@ export default function CreateForm({
     });
 
     try {
-      const res = await insertRecord(data as InsertManufacturer);
+      const res = await insertRecord(data);
       toast({
         title: "You submitted the following values:",
         description: (
@@ -118,9 +105,11 @@ export default function CreateForm({
       });
     } catch (error) {
       console.error("❌ InsertRecord Transaction failed: ", error);
-      throw error; // rethrow the error after logging it
+      throw error; // Rethrow the error after logging it
     }
   };
+
+  const table = tables[tableName];
 
   return (
     <DialogContent className="sm:max-w-md">
@@ -136,20 +125,20 @@ export default function CreateForm({
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full space-y-6"
           >
-            {buildFormInputs<TableGuess>(form, tables[tableName])}
+            {buildFormInputs(form, tables[tableName])}
             <DialogFooter className="sm:justify-start">
               <div className="flex-1">
                 <Button type="submit">Submit</Button>
               </div>
               <div className="flex gap-4">
-                <Button type="reset" onClick={form.reset}>
+                <Button type="reset" onClick={() => form.reset()}>
                   Reset
                 </Button>
                 <DialogClose asChild>
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={form.reset}
+                    onClick={() => form.reset()}
                   >
                     Close
                   </Button>
@@ -161,4 +150,6 @@ export default function CreateForm({
       </div>
     </DialogContent>
   );
-}
+};
+
+export default CreateForm;

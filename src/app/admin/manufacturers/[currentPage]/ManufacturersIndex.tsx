@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/table";
 
 import { getPaginatedManufacturers } from "@/db/queries/manufacturers";
+import { InsertRecordFunction } from "@/db/schema";
 import { type IndexProps } from "@/types";
-import { useRouter } from "next/navigation";
 
 type Props = Omit<
   IndexProps,
@@ -28,12 +28,8 @@ type Props = Omit<
   | "items"
 > & {
   items: Awaited<ReturnType<typeof getPaginatedManufacturers>>;
-  insertFunction: any;
-  deleteFunction: (id: number) => Promise<
-    {
-      [x: string]: any;
-    }[]
-  >;
+  insertRecord: InsertRecordFunction<"manufacturers">;
+  deleteFunction: (id: number) => void;
 };
 
 const ManufacturersIndex = ({
@@ -41,15 +37,11 @@ const ManufacturersIndex = ({
   pageSize,
   currentPage,
   totalRows,
-  insertFunction,
+  insertRecord,
   deleteFunction,
 }: Props) => {
-  console.log("✅", { items });
-  const router = useRouter();
-
-  const handleCreateItem = () => {
-    // Logic to handle item creation, such as a database call
-  };
+  // console.log("✅", { items });
+  // const router = useRouter();
 
   const handleEditItem = (id: number | string) => {
     // Logic to handle item editing
@@ -80,7 +72,8 @@ const ManufacturersIndex = ({
           </DialogTrigger>
           <CreateForm
             tableName={"manufacturers"}
-            insertRecord={insertFunction as any}
+            insertRecord={insertRecord}
+            // this isn't working
           />
         </Dialog>
       </div>

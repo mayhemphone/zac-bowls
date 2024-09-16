@@ -20,9 +20,15 @@ import {
 import { queryTable } from "@/db/queries";
 import { isTableName } from "@/db/schema";
 import { useEffect, useState } from "react";
-import { Form } from "./CRUD/create/CreateForm";
+import { UseFormReturn } from "react-hook-form";
 
-export function RelatedSelect({ form, col }: { form: Form; col: any }) {
+export function RelatedSelect<T extends Record<string, any>>({
+  form,
+  col,
+}: {
+  form: UseFormReturn<T>;
+  col: any;
+}) {
   const [relatedData, setRelatedData] = useState<any[]>([]);
 
   useEffect(() => {
