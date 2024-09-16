@@ -1,0 +1,620 @@
+{
+  "id": "35a02c58-0379-4e70-9441-d7a248b61877",
+  "prevId": "0e36db15-9902-4152-803c-d0aa7324f710",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.BALLS": {
+      "name": "BALLS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "year": {
+          "name": "year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight": {
+          "name": "weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rg": {
+          "name": "rg",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "diff": {
+          "name": "diff",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "purchaseDate": {
+          "name": "purchaseDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manufacturerId": {
+          "name": "manufacturerId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "BALLS_manufacturerId_MANUFACTURERS_id_fk": {
+          "name": "BALLS_manufacturerId_MANUFACTURERS_id_fk",
+          "tableFrom": "BALLS",
+          "tableTo": "MANUFACTURERS",
+          "columnsFrom": [
+            "manufacturerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.FRAMES": {
+      "name": "FRAMES",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "frameNumber": {
+          "name": "frameNumber",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "score": {
+          "name": "score",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gameId": {
+          "name": "gameId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FRAMES_gameId_GAMES_id_fk": {
+          "name": "FRAMES_gameId_GAMES_id_fk",
+          "tableFrom": "FRAMES",
+          "tableTo": "GAMES",
+          "columnsFrom": [
+            "gameId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.GAMES": {
+      "name": "GAMES",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'west seattle bowl'"
+        },
+        "comments": {
+          "name": "comments",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rawData": {
+          "name": "rawData",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "linkId": {
+          "name": "linkId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leagueNightId": {
+          "name": "leagueNightId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "GAMES_linkId_LINKS_id_fk": {
+          "name": "GAMES_linkId_LINKS_id_fk",
+          "tableFrom": "GAMES",
+          "tableTo": "LINKS",
+          "columnsFrom": [
+            "linkId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "GAMES_leagueNightId_LEAGUE_NIGHTS_id_fk": {
+          "name": "GAMES_leagueNightId_LEAGUE_NIGHTS_id_fk",
+          "tableFrom": "GAMES",
+          "tableTo": "LEAGUE_NIGHTS",
+          "columnsFrom": [
+            "leagueNightId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.LEAGUE_NIGHTS": {
+      "name": "LEAGUE_NIGHTS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "week": {
+          "name": "week",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leagueId": {
+          "name": "leagueId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leagueTrimesterId": {
+          "name": "leagueTrimesterId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "oilPatternId": {
+          "name": "oilPatternId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "LEAGUE_NIGHTS_leagueId_LEAGUES_id_fk": {
+          "name": "LEAGUE_NIGHTS_leagueId_LEAGUES_id_fk",
+          "tableFrom": "LEAGUE_NIGHTS",
+          "tableTo": "LEAGUES",
+          "columnsFrom": [
+            "leagueId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "LEAGUE_NIGHTS_leagueTrimesterId_LEAGUE_TRIMESTERS_id_fk": {
+          "name": "LEAGUE_NIGHTS_leagueTrimesterId_LEAGUE_TRIMESTERS_id_fk",
+          "tableFrom": "LEAGUE_NIGHTS",
+          "tableTo": "LEAGUE_TRIMESTERS",
+          "columnsFrom": [
+            "leagueTrimesterId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "LEAGUE_NIGHTS_oilPatternId_OIL_PATTERNS_id_fk": {
+          "name": "LEAGUE_NIGHTS_oilPatternId_OIL_PATTERNS_id_fk",
+          "tableFrom": "LEAGUE_NIGHTS",
+          "tableTo": "OIL_PATTERNS",
+          "columnsFrom": [
+            "oilPatternId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.LEAGUE_TRIMESTERS": {
+      "name": "LEAGUE_TRIMESTERS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leagueId": {
+          "name": "leagueId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "LEAGUE_TRIMESTERS_leagueId_LEAGUES_id_fk": {
+          "name": "LEAGUE_TRIMESTERS_leagueId_LEAGUES_id_fk",
+          "tableFrom": "LEAGUE_TRIMESTERS",
+          "tableTo": "LEAGUES",
+          "columnsFrom": [
+            "leagueId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.LEAGUES": {
+      "name": "LEAGUES",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lsLeagueId": {
+          "name": "lsLeagueId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "day": {
+          "name": "day",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.LINKS": {
+      "name": "LINKS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailDate": {
+          "name": "emailDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.MANUFACTURERS": {
+      "name": "MANUFACTURERS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "MANUFACTURERS_name_unique": {
+          "name": "MANUFACTURERS_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      }
+    },
+    "public.OIL_PATTERN_DURATIONS": {
+      "name": "OIL_PATTERN_DURATIONS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leagueTrimesterId": {
+          "name": "leagueTrimesterId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "OIL_PATTERN_DURATIONS_leagueTrimesterId_LEAGUE_TRIMESTERS_id_fk": {
+          "name": "OIL_PATTERN_DURATIONS_leagueTrimesterId_LEAGUE_TRIMESTERS_id_fk",
+          "tableFrom": "OIL_PATTERN_DURATIONS",
+          "tableTo": "LEAGUE_TRIMESTERS",
+          "columnsFrom": [
+            "leagueTrimesterId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.OIL_PATTERNS": {
+      "name": "OIL_PATTERNS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "link": {
+          "name": "link",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.THROWS": {
+      "name": "THROWS",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "pins": {
+          "name": "pins",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "throwNumber": {
+          "name": "throwNumber",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ballId": {
+          "name": "ballId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "frameId": {
+          "name": "frameId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "THROWS_ballId_BALLS_id_fk": {
+          "name": "THROWS_ballId_BALLS_id_fk",
+          "tableFrom": "THROWS",
+          "tableTo": "BALLS",
+          "columnsFrom": [
+            "ballId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "THROWS_frameId_FRAMES_id_fk": {
+          "name": "THROWS_frameId_FRAMES_id_fk",
+          "tableFrom": "THROWS",
+          "tableTo": "FRAMES",
+          "columnsFrom": [
+            "frameId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

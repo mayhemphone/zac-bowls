@@ -1,3 +1,4 @@
+"use client";
 import CreateForm from "@/components/CRUD/create/CreateForm";
 
 import Pagination from "@/components/Pagination";
@@ -6,6 +7,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import { InsertRecordFunction, TableName } from "@/db/schema";
 import { type IndexProps } from "@/types";
+import { useState } from "react";
 
 type Props<T extends TableName> = Omit<
   IndexProps,
@@ -29,6 +31,7 @@ const Index = <T extends TableName>({
   tableName,
   children,
 }: Props<T>) => {
+  const [open, setOpen] = useState(false);
   const indexOfLastItem = currentPage * pageSize;
   const indexOfFirstItem = indexOfLastItem - pageSize;
 
@@ -42,11 +45,15 @@ const Index = <T extends TableName>({
     <div className="w-full mx-auto py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold uppercase">{tableName}</h1>
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">Create New</Button>
           </DialogTrigger>
-          <CreateForm tableName={tableName} insertRecord={insertRecord} />
+          <CreateForm
+            tableName={tableName}
+            insertRecord={insertRecord}
+            setOpen={setOpen}
+          />
         </Dialog>
       </div>
       <div className="border rounded-lg overflow-hidden">

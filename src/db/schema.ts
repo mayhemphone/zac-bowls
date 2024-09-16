@@ -8,15 +8,13 @@ import {
   text,
   varchar,
 } from "drizzle-orm/pg-core";
-
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
 
 export const links = pgTable("LINKS", {
   id: serial("id").primaryKey(),
   url: varchar("url").notNull(),
   emailDate: date("emailDate").notNull(),
-  // relationships >
-  // gameId: integer("gameId"),
 });
 
 export const linksRelations = relations(links, ({ many }) => ({
@@ -219,41 +217,6 @@ export const manufacturerRelations = relations(manufacturers, ({ many }) => ({
   balls: many(balls),
 }));
 
-// games, frames, throws, balls, manufacturers
-
-export type InsertLink = typeof links.$inferInsert;
-export type SelectLinks = typeof links.$inferSelect;
-
-export type InsertGame = typeof games.$inferInsert;
-export type SelectGames = typeof games.$inferSelect;
-
-export type InsertFrame = typeof frames.$inferInsert;
-export type SelectFrames = typeof frames.$inferSelect;
-
-export type InsertThrow = typeof throws.$inferInsert;
-export type SelectThrows = typeof throws.$inferSelect;
-
-export type InsertBall = typeof balls.$inferInsert;
-export type SelectBalls = typeof balls.$inferSelect;
-
-export type InsertLeague = typeof leagues.$inferInsert;
-export type SelectLeagues = typeof leagues.$inferSelect;
-
-export type InsertLeagueTrimester = typeof leagueTrimesters.$inferInsert;
-export type SelectLeagueTrimesters = typeof leagueTrimesters.$inferSelect;
-
-export type InsertOilPattern = typeof oilPatterns.$inferInsert;
-export type SelectOilPatterns = typeof oilPatterns.$inferSelect;
-
-export type InsertOilPatternDuration = typeof oilPatternDurations.$inferInsert;
-export type SelectOilPatternDurations = typeof oilPatternDurations.$inferSelect;
-
-export type InsertLeagueNight = typeof leagueNights.$inferInsert;
-export type SelectLeagueNights = typeof leagueNights.$inferSelect;
-
-export type InsertManufacturer = typeof manufacturers.$inferInsert;
-export type SelectManufacturers = typeof manufacturers.$inferSelect;
-
 export const tables = {
   links,
   leagues,
@@ -268,13 +231,11 @@ export const tables = {
   oilPatternDurations,
 } as const;
 
-export interface BaseTable {
-  id: number;
-  name: string;
-}
-
+// empty strings do not count as null, so i need to specify the .min on a field like manufacturers below
 export const insertSchemas = {
-  manufacturers: createInsertSchema(manufacturers),
+  manufacturers: createInsertSchema(manufacturers, {
+    name: z.string().min(1),
+  }),
   links: createInsertSchema(links),
   games: createInsertSchema(games),
   frames: createInsertSchema(frames),
@@ -287,6 +248,7 @@ export const insertSchemas = {
   leagueNights: createInsertSchema(leagueNights),
 };
 
+// not using??
 export const selectSchemas = {
   manufacturers: createSelectSchema(manufacturers),
   links: createSelectSchema(links),
@@ -300,8 +262,6 @@ export const selectSchemas = {
   oilPatternDurations: createSelectSchema(oilPatternDurations),
   leagueNights: createSelectSchema(leagueNights),
 };
-
-import { z } from "zod";
 
 export type InsertRecordFunction<T extends keyof typeof insertSchemas> = (
   data: z.infer<(typeof insertSchemas)[T]>
@@ -318,3 +278,37 @@ export type TableName = keyof typeof tables;
 export function isTableName(name: string): name is TableName {
   return Object.keys(tables).includes(name);
 }
+
+// havne't been using these, because of the zod ones below
+export type InsertLink = typeof links.$inferInsert;
+export type SelectLinks = typeof links.$inferSelect;
+
+export type InsertLeague = typeof leagues.$inferInsert;
+export type SelectLeagues = typeof leagues.$inferSelect;
+
+export type InsertLeagueTrimester = typeof leagueTrimesters.$inferInsert;
+export type SelectLeagueTrimesters = typeof leagueTrimesters.$inferSelect;
+
+export type InsertLeagueNight = typeof leagueNights.$inferInsert;
+export type SelectLeagueNights = typeof leagueNights.$inferSelect;
+
+export type InsertGame = typeof games.$inferInsert;
+export type SelectGames = typeof games.$inferSelect;
+
+export type InsertFrame = typeof frames.$inferInsert;
+export type SelectFrames = typeof frames.$inferSelect;
+
+export type InsertThrow = typeof throws.$inferInsert;
+export type SelectThrows = typeof throws.$inferSelect;
+
+export type InsertOilPattern = typeof oilPatterns.$inferInsert;
+export type SelectOilPatterns = typeof oilPatterns.$inferSelect;
+
+export type InsertOilPatternDuration = typeof oilPatternDurations.$inferInsert;
+export type SelectOilPatternDurations = typeof oilPatternDurations.$inferSelect;
+
+export type InsertManufacturer = typeof manufacturers.$inferInsert;
+export type SelectManufacturers = typeof manufacturers.$inferSelect;
+
+export type InsertBall = typeof balls.$inferInsert;
+export type SelectBalls = typeof balls.$inferSelect;
