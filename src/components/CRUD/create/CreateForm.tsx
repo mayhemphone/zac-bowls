@@ -36,7 +36,7 @@ interface CreateFormProps<T extends TableName> {
   insertRecord: InsertRecordFunction<T>;
 }
 
-export const returnInput = <T extends Record<string, any>>(
+export const returnInput = (
   form: any, // can't get this typed
   column: any, // cant' get this typed
   type: string,
