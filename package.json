@@ -10,7 +10,8 @@
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "drop": "drizzle-kit drop",
-    "push": "drizzle-kit push"
+    "push": "drizzle-kit push",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

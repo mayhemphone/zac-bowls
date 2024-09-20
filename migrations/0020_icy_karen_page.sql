@@ -1,0 +1,1 @@
+ALTER TABLE "GAMES" RENAME COLUMN "number" TO "gameNumber";

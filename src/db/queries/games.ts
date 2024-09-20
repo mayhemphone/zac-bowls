@@ -1,10 +1,14 @@
 import { GamesData } from "@/util/api/ingestGame";
-import { count, sql } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { db } from "../";
 import { InsertGame, frames, games, throws } from "../schema";
 
 export async function createGame(data: InsertGame) {
-  return await db.insert(games).values(data).returning({ id: games.id });
+  "use server";
+  const res = await db.insert(games).values(data).returning({ id: games.id });
+  revalidatePath("/admin/games/");
+  return res;
 }
 
 export async function getAverageScores({
@@ -78,12 +82,19 @@ export async function getGameById(id: number) {
   return game;
 }
 
-export async function getPaginatedGames(page: number, pageSize: number) {
+export async function getPaginatedGames({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) {
   return await db.query.games.findMany({
     orderBy: (games, { asc }) => asc(games.id),
     with: {
       frames: true,
-      link: true,
+      link: { columns: { url: true } },
+      leagueNight: { with: { league: { columns: { name: true } } } },
     },
     limit: pageSize,
     offset: (page - 1) * pageSize,
@@ -93,6 +104,12 @@ export async function getPaginatedGames(page: number, pageSize: number) {
 export async function getGamesCount() {
   const res = await db.select({ count: count() }).from(games);
   return res[0].count;
+}
+
+export async function deleteGame(id: number) {
+  "use server";
+  await db.delete(games).where(eq(games.id, id));
+  revalidatePath("/admin/games/");
 }
 
 export async function insertGameData(

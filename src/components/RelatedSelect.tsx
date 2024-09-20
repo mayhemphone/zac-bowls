@@ -47,7 +47,7 @@ export function RelatedSelect<T extends Record<string, any>>({
           relatedData.map((item) => ({
             id: item.id,
             // @ts-ignore Because i am building the string for the related field, the return type is not inferred
-            name: item.name || item.week,
+            name: item.name || item.week || item.emailDate || item.id,
           }))
         );
       }
