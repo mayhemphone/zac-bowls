@@ -1,4 +1,5 @@
 import ActionsCell from "@/components/CRUD/index/ActionsCell";
+import { default as Index } from "@/components/CRUD/index/Index";
 import {
   Table,
   TableBody,
@@ -8,21 +9,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  createManufacturer,
-  deleteManufacturer,
-  getManufacturersCount,
-  getPaginatedManufacturers,
-} from "@/db/queries/manufacturers";
+  createLink,
+  deleteLink,
+  getLinksCount,
+  getPaginatedLinks,
+} from "@/db/queries/links";
 import { TableName } from "@/db/schema";
 import { redirect } from "next/navigation";
-import { default as Index } from "../../../../components/CRUD/index/Index";
 
-interface ManufacturerPageProps {
+interface LinkPageProps {
   params: { currentPage: string };
 }
 
-const Page = async ({ params }: ManufacturerPageProps) => {
-  const tableName: TableName = "manufacturers";
+const Page = async ({ params }: LinkPageProps) => {
+  const tableName: TableName = "links";
 
   const { currentPage } = params;
   // redirect to first page if no page is provided
@@ -30,7 +30,7 @@ const Page = async ({ params }: ManufacturerPageProps) => {
 
   const pageSize = 10;
 
-  const totalRows = await getManufacturersCount();
+  const totalRows = await getLinksCount();
   const parsedCurrentPage = parseInt(currentPage, 10);
 
   // if they are on a currentPage that exceeds the number of rows*pageSize
@@ -45,7 +45,7 @@ const Page = async ({ params }: ManufacturerPageProps) => {
     redirect(url);
   }
 
-  const manufacturers = await getPaginatedManufacturers({
+  const links = await getPaginatedLinks({
     page: parsedCurrentPage,
     pageSize,
   });
@@ -56,37 +56,40 @@ const Page = async ({ params }: ManufacturerPageProps) => {
       currentPage={currentPageInt}
       pageSize={10}
       totalRows={totalRows}
-      insertRecord={createManufacturer}
-      deleteFunction={deleteManufacturer}
+      insertRecord={createLink}
+      deleteFunction={deleteLink}
       tableName={tableName}
     >
       <Table>
         <TableHeader>
           <TableRow className="uppercase font-extrabold">
             <TableHead className="">id</TableHead>
-            <TableHead className="">name</TableHead>
-            <TableHead className=""># of balls</TableHead>
-            <TableHead className="w-[120px] text-center">actions</TableHead>
+            <TableHead className="">email date</TableHead>
+            <TableHead className="">url</TableHead>
+            <TableHead className=""># of games</TableHead>
           </TableRow>
         </TableHeader>
         {/*  */}
         <TableBody>
-          {manufacturers.map((item) => {
+          {links.map((item) => {
             return (
               <TableRow key={item.id}>
                 <TableCell className="">
                   <p>{item.id}</p>
                 </TableCell>
-                <TableCell>
-                  <p>{item.name}</p>
+                <TableCell className="">
+                  <p>{item.emailDate}</p>
                 </TableCell>
                 <TableCell className="">
-                  <p>{item.balls.length}</p>
+                  <p>{item.url}</p>
+                </TableCell>
+                <TableCell className="">
+                  <p>{item.games.length}</p>
                 </TableCell>
                 {/* actions column */}
                 <ActionsCell
                   id={item.id}
-                  deleteFunction={deleteManufacturer}
+                  deleteFunction={deleteLink}
                   tableName={tableName}
                   // handleEditItem={handleEditItem}
                 />

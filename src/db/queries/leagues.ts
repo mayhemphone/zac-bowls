@@ -3,10 +3,17 @@ import { db } from "../";
 import { InsertLeague, leagues } from "../schema";
 
 export async function createLeague(data: InsertLeague) {
+  "use server";
   return await db.insert(leagues).values(data).returning();
 }
 
-export async function getPaginatedLeagues(page: number, pageSize: number) {
+export async function getPaginatedLeagues({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) {
   return await db.query.leagues.findMany({
     orderBy: (leagues, { asc }) => asc(leagues.id),
     with: {

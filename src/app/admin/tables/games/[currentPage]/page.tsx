@@ -1,4 +1,5 @@
 import ActionsCell from "@/components/CRUD/index/ActionsCell";
+import { default as Index } from "@/components/CRUD/index/Index";
 import LinkOutIcon from "@/components/icons/LinkOut";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +27,6 @@ import {
 import { TableName } from "@/db/schema";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { default as Index } from "../../../../components/CRUD/index/Index";
 
 interface GamePageProps {
   params: { currentPage: string };

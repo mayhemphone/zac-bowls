@@ -107,6 +107,7 @@ export const oilPatternDurations = pgTable("OIL_PATTERN_DURATIONS", {
   leagueTrimesterId: integer("leagueTrimesterId").references(
     () => leagueTrimesters.id
   ),
+  oilPatternId: integer("oilPatternId").references(() => oilPatterns.id),
 });
 
 export const oilPatternDurationsRelations = relations(
@@ -115,6 +116,10 @@ export const oilPatternDurationsRelations = relations(
     leagueTrimester: one(leagueTrimesters, {
       fields: [oilPatternDurations.leagueTrimesterId],
       references: [leagueTrimesters.id],
+    }),
+    oilPattern: one(oilPatterns, {
+      fields: [oilPatternDurations.oilPatternId],
+      references: [oilPatterns.id],
     }),
   })
 );
